@@ -1,0 +1,13 @@
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Debug\netcoreapp3.1\BoincElectricity.exe
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\obj\Debug\netcoreapp3.1\BoincElectricity.csprojAssemblyReference.cache
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\obj\Debug\netcoreapp3.1\BoincElectricity.AssemblyInfoInputs.cache
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\obj\Debug\netcoreapp3.1\BoincElectricity.AssemblyInfo.cs
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Debug\netcoreapp3.1\BoincElectricity.deps.json
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Debug\netcoreapp3.1\BoincElectricity.runtimeconfig.json
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Debug\netcoreapp3.1\BoincElectricity.runtimeconfig.dev.json
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Debug\netcoreapp3.1\BoincElectricity.dll
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Debug\netcoreapp3.1\BoincElectricity.pdb
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\obj\Debug\netcoreapp3.1\BoincElectricity.csproj.CopyComplete
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\obj\Debug\netcoreapp3.1\BoincElectricity.dll
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\obj\Debug\netcoreapp3.1\BoincElectricity.pdb
