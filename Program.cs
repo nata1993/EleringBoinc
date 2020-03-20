@@ -29,13 +29,13 @@ namespace BoincElectricity
     }
     class CallElering
     {
-        private readonly string eleringApiLink = "https://dashboard.elering.ee/api/nps/price";
-        private string time;
-        private double price;
-        private int timestamp;
+        private protected readonly string eleringApiLink = "https://dashboard.elering.ee/api/nps/price";
+        private protected string time;
+        private protected decimal price;
+        private protected int timestamp;
 
         public string Time { get { return time; } set { time = value; } }
-        public double Price { get { return price; } set { price = value; } }
+        public decimal Price { get { return price; } set { price = value; } }
         public int Timestamp { get { return timestamp; } set { timestamp = value; } }
         private string FormatDateandTime(int ts)
         {
@@ -43,7 +43,7 @@ namespace BoincElectricity
             string formatedDate = date.ToString("dd.MM.yyyy HH:mm");
             return formatedDate;
         }
-        public void GetApiData()
+        private void GetApiData()
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(eleringApiLink);
             request.Method = "GET";
@@ -52,49 +52,56 @@ namespace BoincElectricity
             using var responseReader = new StreamReader(webResponseStream);
             var response = responseReader.ReadToEnd();
             EleringDataApi.EleringData elering = JsonConvert.DeserializeObject<EleringDataApi.EleringData>(response);
+            //add data to object
             Timestamp = elering.Data.Ee[^1].Timestamp;
             Time = FormatDateandTime(timestamp);
-            Price = elering.Data.Ee[^1].Price;
+            Price = Convert.ToDecimal(elering.Data.Ee[^1].Price);
+        }
+        public void PublicGetApiData()
+        {
+            GetApiData();
         }
     }
     class Program
     {
         static void Main()
         {
+            //SETUP 
             OutputEncoding = Encoding.UTF8; //make console show utf-8 characters
+
             int retryCounter = 1;   //counter for elering data aquisition
+            byte userSpecifiedElectricityPrice = 0;
             CallElering elering = new CallElering();    //create object for elering time and price data
-            Process boinc = new Process();  //create process of programm to be run
+            Process boinc = new Process();  //create process of external program to be run
             boinc.StartInfo.UseShellExecute = false;    //start only executables e.g.: .exe
             boinc.StartInfo.FileName = "C:\\Program Files\\BOINC program\\boincmgr";    //program file path
-            //boinc.StartInfo.CreateNoWindow = true;  //!NB! doesnt work for some reason
 
-            int boincID;
-            int boincHandle;
+            WriteLine("Please provide highest electricity price you want to run program");
+            userSpecifiedElectricityPrice = byte.Parse(ReadLine());
+
+            //MAIN PROCESS LOOP
 
             //loop for electricity price check and program start up and shut down
             while (true)
             {
                 try
                 {
-                    WriteLine("Enter price");
-                    int price = int.Parse(ReadLine());
+                    //ASK FOR ELECTRICITY DATA
+                    Clear();
                     WriteLine($"{retryCounter}) Getting data from Elering");
                     WriteLine("=========================\n");
-                    elering.GetApiData();   //getting data from elering
+                    elering.PublicGetApiData();   //getting data from elering
 
                     try
                     {
+                        //CHECK FOR ALL RUNNING PROCESSES
                         PriceText(elering.Time, elering.Price);     //Show aqcuired data from Elering
-                        Process[] processList = Process.GetProcessesByName("BOINC");   //check running processes by searchable process name
+                        Process[] processList = Process.GetProcessesByName("BOINC");   //Search for running processes by name
+                        string allRunningProcesses = processList[0].ToString();   //convert acquired process into string for later use
 
-                        string localAllWord = processList[0].ToString();   //convert acquired process into string for later use
-
-                        if (price < 10 && localAllWord == "System.Diagnostics.Process (boinc)")    //if process running and price is below specified, continue running boinc
+                        //CHECK FOR RUNNING EXTERNAL PROCESS
+                        if (elering.Price < userSpecifiedElectricityPrice && allRunningProcesses is "System.Diagnostics.Process (boinc)")    //if process running and price is below specified, continue running boinc
                         {
-                            boincID = boinc.Id; //gets process id
-                            boincHandle = boinc.Handle.ToInt32();   //gets process handle
-                            WriteLine($"Process ID: {boincID}; Process Handle: {boincHandle}");
                             WriteLine("Electricity price is still good!");
                             WriteLine("Boinc will continue crunching numbers.");
                             //Thread.Sleep(elering.Timestamp + 3600000);  //stop process for one hour inorder to check electricity price again one hour later
@@ -106,29 +113,36 @@ namespace BoincElectricity
                             WriteLine("Price is too high for cheap number crunching!");
                             WriteLine("Shutting down Boinc!");
                             WriteLine("Will check price again at next o'clock.");
-                            //boinc.Refresh();
-                            boincID = boinc.Id; //gets process id
-                            boincHandle = boinc.Handle.ToInt32();   //gets process handle
-                            WriteLine($"Process ID: {boincID}; Process Handle: {boincHandle}");
+
+                            try
+                            {
+                                foreach (Process proc in Process.GetProcessesByName("BOINC"))
+                                {
+                                    proc.Kill();
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                Clear();
+                                WriteLine(e);
+                            }
                             boinc.Kill();   //not very elegant way for stopping process...... NOT WORKING!
                             boinc.WaitForExit();
-                            boinc.Dispose();
                             //Thread.Sleep(elering.Timestamp + 3600000);  //stop process for one hour inorder to check electricity price again one hour later
 
                             Thread.Sleep(10000);
                         }
                     }
+                    //EXTERNAL PROCESS IS NOT RUNNING
                     catch (IndexOutOfRangeException)    //if there is no process running, this exception is thrown and process is started
                     {
                         PriceText(elering.Time, elering.Price);     //Show aqcuired data from Elering
                         WriteLine("Boinc is not crunching numbers.\n");
 
-                        if (price < 10)   //if price is below 45€/MWh and got data from elering, proceed to start process
+                        //START EXTERNAL PROCESS
+                        if (elering.Price < userSpecifiedElectricityPrice)   //if price is below 45€/MWh and got data from elering, proceed to start process
                         {
                             boinc.Start();  //start process based on previous setup
-                            boincID = boinc.Id; //gets process id
-                            boincHandle = boinc.Handle.ToInt32();   //gets process handle
-                            WriteLine($"Process ID: {boincID}; Process Handle: {boincHandle}");
                             Thread.Sleep(13000);    //wait 13 seconds for program to connect to internet and get data from internet
                             boinc.CloseMainWindow();    //close program window automatically
 
@@ -138,6 +152,7 @@ namespace BoincElectricity
 
                             Thread.Sleep(10000);
                         }
+                        //WAIT FOR SUITABLE MOMENT TO START PROCESS
                         else
                         {
                             WriteLine($"Price is still too high for cruncing numbers!");
@@ -148,6 +163,7 @@ namespace BoincElectricity
                         }
                     }
                 }
+                //IF NO ELECTRICITY DATA, TRY AGAIN
                 catch (WebException)
                 {
                     WriteLine("Could not get Elering data from internet.\n");
@@ -157,7 +173,7 @@ namespace BoincElectricity
             }
         }
 
-        static void PriceText(string _time, double _price)
+        static void PriceText(string _time, decimal _price)
         {
             Clear();
             WriteLine("Got data from Elering!\n");

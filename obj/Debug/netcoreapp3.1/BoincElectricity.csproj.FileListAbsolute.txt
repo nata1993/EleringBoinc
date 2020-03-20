@@ -11,3 +11,5 @@ C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Debug\netcoreap
 C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\obj\Debug\netcoreapp3.1\BoincElectricity.csproj.CopyComplete
 C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\obj\Debug\netcoreapp3.1\BoincElectricity.dll
 C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\obj\Debug\netcoreapp3.1\BoincElectricity.pdb
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\obj\Debug\netcoreapp3.1\BoincElectricity.csproj.CoreCompileInputs.cache
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\obj\Debug\netcoreapp3.1\BoincElectricity.genruntimeconfig.cache
