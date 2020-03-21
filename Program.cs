@@ -8,6 +8,12 @@ using System;
 using System.Text;
 using System.Threading;
 
+//save user provided highest electricity price and use it for next program startup
+//timestamp that follows o'clock timing no matter fro what time program was started
+//calculate spent electricity and its cost
+//calculate total electricity used over time.
+//optional: send data to database
+
 namespace BoincElectricity
 {
     class EleringDataApi
@@ -70,13 +76,13 @@ namespace BoincElectricity
             OutputEncoding = Encoding.UTF8; //make console show utf-8 characters
 
             int retryCounter = 1;   //counter for elering data aquisition
-            byte userSpecifiedElectricityPrice = 0;
+            byte userSpecifiedElectricityPrice; //user provided maximum electricity price he/she wants to run boinc at
             CallElering elering = new CallElering();    //create object for elering time and price data
             Process boinc = new Process();  //create process of external program to be run
             boinc.StartInfo.UseShellExecute = false;    //start only executables e.g.: .exe
             boinc.StartInfo.FileName = "C:\\Program Files\\BOINC program\\boincmgr";    //program file path
 
-            WriteLine("Please provide highest electricity price you want to run program");
+            Write("Please provide highest electricity price you want to run\nprogram in megawats per hour pricing (e.g 45 as in 45€/MWh): ");
             userSpecifiedElectricityPrice = byte.Parse(ReadLine());
 
             //MAIN PROCESS LOOP
@@ -172,14 +178,13 @@ namespace BoincElectricity
                 }
             }
         }
-
         static void PriceText(string _time, decimal _price)
         {
             Clear();
             WriteLine("Got data from Elering!\n");
             WriteLine("Electricity price right now");
             WriteLine("=========================\n");
-            WriteLine($"{_time} : {_price} MWh/€\n");
+            WriteLine($"{_time} : {_price} €/MWh\n");
         }
     }
 }
