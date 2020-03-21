@@ -5,10 +5,53 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
     <PublishSingleFile>true</PublishSingleFile>
+    <Version>1.0.3</Version>
+    <Authors>Bogdan Parubok</Authors>
+    <Company />
+    <Product>Boinc Electricity Price Follower</Product>
+    <Description>A program that follows local electricity price and turns BOINC program on based on electricity price at the moment. When electricity price is above user provided level, BOINC shuts down, otherwise it keeps running.</Description>
+    <Copyright>Bogdan Parubok</Copyright>
+    <PackageReleaseNotes>v1.0.3
+______
+Added method that distinguishes between user inputed value whenever it is written with comma or dot. 
+Method replaces input with dot to input with comma.
+
+v1.0.2
+______
+Added method for user to provide electricity price level from which program will turn BOINC on or off.
+
+v1.0.1
+______
+Minor language mistakes corrected.
+
+v1.0.0
+______
+Initial release or Console Application.</PackageReleaseNotes>
+    <RepositoryUrl>https://github.com/nata1993/EleringBoinc.git</RepositoryUrl>
+    <NeutralLanguage>en-GB</NeutralLanguage>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
