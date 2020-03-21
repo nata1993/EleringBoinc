@@ -5,16 +5,20 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
     <PublishSingleFile>true</PublishSingleFile>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
     <Authors>Bogdan Parubok</Authors>
     <Company />
     <Product>Boinc Electricity Price Follower</Product>
     <Description>A program that follows local electricity price and turns BOINC program on based on electricity price at the moment. When electricity price is above user provided level, BOINC shuts down, otherwise it keeps running.</Description>
     <Copyright>Bogdan Parubok</Copyright>
     <PackageReleaseNotes>
+v1.1.1
+______
+Moved method of user input for electricity price level for asking only once when program starts.
+
 v1.1.0
 ______
-Added mechanism for writing program working log and error log.
+Added mechanism for writing program working and error log.
       
 v1.0.3
 ______

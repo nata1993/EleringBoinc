@@ -82,7 +82,11 @@ namespace BoincElectricity
             decimal numericalSpecifiedElectricityPrice; //numerical representation of user procided electricity price
             //create directory for program log
             Directory.CreateDirectory("C:\\BoincElectricity\\");
-            File.Create("C:\\BoincElectricity\\Boinc-Electricity-Log.txt").Close();
+            //check if file exists, else create one
+            if (!File.Exists("C:\\BoincElectricity\\Boinc-Electricity-User-Settings.txt"))
+            {
+                File.Create("C:\\BoincElectricity\\Boinc-Electricity-User-Settings.txt").Close();
+            }
             //objects and writers
             StreamWriter textWriter = new StreamWriter("C:\\BoincElectricity\\Boinc-Electricity-Log.txt", true);    //StreamWritter is adding data to log file, not overwriting
             CallElering elering = new CallElering();    //create object for elering time and price data
@@ -91,14 +95,13 @@ namespace BoincElectricity
             boinc.StartInfo.UseShellExecute = false;    //start only executables e.g.: .exe
             boinc.StartInfo.FileName = "C:\\Program Files\\BOINC program\\boincmgr";    //program file path
 
+            textWriter.WriteLine($"{DateTime.Now} - ========================== NEW PROGRAM STARTUP ====================================");
             textWriter.WriteLine($"{DateTime.Now} - Setting up program ressources: Directory, StreamWriter, API object, Process object.");
             textWriter.Flush();
 
-            //MAIN PROCESS LOOP
-            //loop for electricity price check and program start up and shut down
+            //ASK FOR USER INPUT
             while (true)
             {
-                //Ask user for electricity price and convert it to numerical representation
                 try
                 {
                     Write(" Please provide highest electricity price you want to run \n program in megawats per hour pricing (e.g 45 as in 45€/MWh): ");
@@ -112,15 +115,30 @@ namespace BoincElectricity
                     textWriter.WriteLine($"{DateTime.Now} - User provided electricity price: {userSpecifiedElectricityPrice}.");
                     textWriter.WriteLine($"{DateTime.Now} - User provided numerical translation of electricity price: {numericalSpecifiedElectricityPrice}.");
                     textWriter.Flush();
+                    break;
+                }
+                catch (Exception)
+                {
+                    textWriter.WriteLine($"{DateTime.Now} - User provided electricity price in incorrect format.");
+                    textWriter.Flush();
 
+                    Clear();
+                    WriteLine(" Please insert valid number.\n");
+                }
+            }
+
+            //MAIN PROCESS LOOP
+            //loop for electricity price check and program start up and shut down
+            while (true)
+            {
                     try
                     {
                         //ASK FOR ELECTRICITY DATA
-                        textWriter.WriteLine($"{DateTime.Now} - Requested data from Elering.");
+                        textWriter.WriteLine($"{DateTime.Now} - Requesting data from Elering.");
                         textWriter.Flush();
 
                         Clear();
-                        WriteLine($" {retryCounter}) Getting data from Elering");
+                        WriteLine($" {retryCounter}) Requesting data from Elering");
                         WriteLine(" =========================\n");
                         elering.PublicGetApiData();   //getting data from elering
 
@@ -144,9 +162,7 @@ namespace BoincElectricity
 
                                 WriteLine(" Electricity price is still good!");
                                 WriteLine(" Boinc will continue crunching numbers.");
-                                //Thread.Sleep(elering.Timestamp + 3600000);  //stop process for one hour inorder to check electricity price again one hour later
-
-                                Thread.Sleep(10000);
+                                Thread.Sleep(3600000);  //stop process for one hour inorder to check electricity price again one hour later
                             }
                             else
                             {
@@ -179,9 +195,7 @@ namespace BoincElectricity
                                     textWriter.Flush();
                                     break;
                                 }
-                                //Thread.Sleep(elering.Timestamp + 3600000);  //stop process for one hour inorder to check electricity price again one hour later
-
-                                Thread.Sleep(10000);
+                                Thread.Sleep(3600000);  //stop process for one hour inorder to check electricity price again one hour later
                             }
                         }
                         //EXTERNAL PROCESS IS NOT RUNNING
@@ -208,9 +222,7 @@ namespace BoincElectricity
 
                                 WriteLine(" BOINC started crunching numbers!");
                                 WriteLine(" Will check price again at next o'clock.\n");
-                                //Thread.Sleep(elering.Timestamp + 3600000);  //stop process for one hour inorder to check electricity price again one hour later
-
-                                Thread.Sleep(10000);
+                                Thread.Sleep(3600000);  //stop process for one hour inorder to check electricity price again one hour later
                             }
                             //WAIT FOR SUITABLE MOMENT TO START PROCESS
                             else
@@ -220,9 +232,7 @@ namespace BoincElectricity
 
                                 WriteLine(" Price is still too high for cruncing numbers!");
                                 WriteLine(" Will check price again at next o'clock.\n");
-                                //Thread.Sleep(elering.Timestamp + 3600000);  //stop process for one hour inorder to check electricity price again one hour later
-
-                                Thread.Sleep(10000);
+                                Thread.Sleep(3600000);  //stop process for one hour inorder to check electricity price again one hour later
                             }
                         }
                     }
@@ -237,22 +247,13 @@ namespace BoincElectricity
 
                         Thread.Sleep(5000);
                     }
-                }
-                catch (Exception)
-                {
-                    textWriter.WriteLine($"{DateTime.Now} - User provided electricity price in incorrect format.");
-                    textWriter.Flush();
-
-                    Clear();
-                    WriteLine(" Please insert valid number.\n");
-                }
             }
             ReadLine();
         }
         static void PriceText(string _time, decimal _price)
         {
             Clear();
-            WriteLine(" Got data from Elering!\n");
+            WriteLine(" Requested data from Elering!\n");
             WriteLine(" Electricity price right now");
             WriteLine(" =========================\n");
             WriteLine($" {_time} : {_price} €/MWh\n");
