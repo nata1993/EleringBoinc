@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading;
 using static System.Console;
 
-//save user provided highest electricity price and use it for next program startup
 //calculate spent electricity and its cost
 //calculate total electricity used over time.
 //check if BOINC is even installed on computer
@@ -23,6 +22,7 @@ namespace BoincElectricity
         private protected decimal priceFromElering;     //price from elering without taxes
         private protected int timestampFromElering;     //timestamp from elering
 
+        string EleringApiLink { get { return eleringApiLink; } }
         public string TimeFromElering { get { return timeFromElering; }  }
         public decimal PriceFromElering { get { return priceFromElering; }  }
         private string FormatDateandTime(int timeStamp)
@@ -34,8 +34,8 @@ namespace BoincElectricity
         //Get data from elering
         private void GetApiData()
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(eleringApiLink);
-            request.Method = "GET";
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(EleringApiLink);
+                           request.Method = "GET";
             var webResponse = request.GetResponse();
             var webResponseStream = webResponse.GetResponseStream();
             using var responseReader = new StreamReader(webResponseStream);
@@ -75,57 +75,64 @@ namespace BoincElectricity
             int retryCounter = 1;   //counter for elering data aquisition
             int secondsTillNextHour;
             string userSpecifiedElectricityPrice; //user provided maximum electricity price he/she wants to run boinc at
-            decimal numericalSpecifiedElectricityPrice; //numerical representation of user procided electricity price
-            //create directory for program log
-            Directory.CreateDirectory("C:\\BoincElectricity\\");
-            //check if file exists, else create one
-            if (!File.Exists("C:\\BoincElectricity\\Boinc-Electricity-User-Settings.txt"))
-            {
-                File.Create("C:\\BoincElectricity\\Boinc-Electricity-User-Settings.txt").Close();
-            }
+            decimal numericalUserSpecifiedElectricityPrice; //numerical representation of user procided electricity price
+            //create directory for program log and settings
+            CreateDirectories();
             //objects and writers
             StreamWriter textWriter = new StreamWriter("C:\\BoincElectricity\\Boinc-Electricity-Log.txt", true);    //StreamWritter is adding data to log file, not overwriting
             Elering elering = new Elering();    //create object for elering time and price data
             Process boinc = new Process();  //create process of external program to be run
-
-            boinc.StartInfo.UseShellExecute = false;    //start only executables e.g.: .exe
-            boinc.StartInfo.FileName = "C:\\Program Files\\BOINC program\\boincmgr";    //program file path
+                    boinc.StartInfo.UseShellExecute = false;    //start only executables e.g.: .exe
+                    boinc.StartInfo.FileName = "C:\\Program Files\\BOINC program\\boincmgr";    //program file path
 
             //log
-            textWriter.WriteLine($"{DateTime.Now} - ========================== NEW PROGRAM STARTUP ====================================");
-            textWriter.WriteLine($"{DateTime.Now} - Setting up program ressources: Directory, StreamWriter, API object, Process object.");
+            textWriter.WriteLine($"\n{DateTime.Now} - ========================== NEW PROGRAM STARTUP ====================================\n" +
+                                 $"{DateTime.Now} - Setting up program ressources: Directory, StreamWriter, API object, Process object.");
             textWriter.Flush();
 
-            //ASK FOR USER INPUT
-            while (true)
+            //read settings file for saved data
+            bool savedPrice = decimal.TryParse(File.ReadAllText("C:\\BoincElectricity\\Boinc-Electricity-User-Settings.txt").ToString(), out decimal result);
+            if (!savedPrice)
             {
-                try
+                //ASK FOR USER INPUT
+                while (true)
                 {
-                    Write(" Please provide highest electricity price you want to run \n program in megawats per hour pricing (e.g 45 as in 45€/MWh): ");
-                    userSpecifiedElectricityPrice = ReadLine();
-                    if (userSpecifiedElectricityPrice.Contains("."))
+                    try
                     {
-                        userSpecifiedElectricityPrice = userSpecifiedElectricityPrice.Replace(".", ",");
+                        Write(" Please provide highest electricity price you want to run \n program in megawats per hour pricing (e.g 45 as in 45€/MWh): ");
+                        userSpecifiedElectricityPrice = ReadLine();
+                        numericalUserSpecifiedElectricityPrice = NumericalUserInput(userSpecifiedElectricityPrice);
+                        File.WriteAllText("C:\\BoincElectricity\\Boinc-Electricity-User-Settings.txt", userSpecifiedElectricityPrice);
+                        //log
+                        textWriter.WriteLine($"{DateTime.Now} - -----------------------------\n" +
+                                             $"{DateTime.Now} - User provided electricity price: {userSpecifiedElectricityPrice}.\n" +
+                                             $"{DateTime.Now} - User provided numerical translation of electricity price: {numericalUserSpecifiedElectricityPrice}.\n" +
+                                             $"{DateTime.Now} - Saved user provided numerical translation of electricity price to settings file.");
+                        textWriter.Flush();
+                        break;
                     }
-                    numericalSpecifiedElectricityPrice = decimal.Parse(userSpecifiedElectricityPrice);
-                    //log
-                    textWriter.WriteLine($"{DateTime.Now} - -----------------------------");
-                    textWriter.WriteLine($"{DateTime.Now} - User provided electricity price: {userSpecifiedElectricityPrice}.");
-                    textWriter.WriteLine($"{DateTime.Now} - User provided numerical translation of electricity price: {numericalSpecifiedElectricityPrice}.");
-                    textWriter.Flush();
-                    break;
-                }
-                catch (Exception)
-                {
-                    Clear();
-                    WriteLine(" Please insert valid number.\n");
-                    //log
-                    textWriter.WriteLine($"{DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                    textWriter.WriteLine($"{DateTime.Now} - User provided electricity price in incorrect format.");
-                    textWriter.Flush();
+                    catch (Exception)
+                    {
+                        Clear();
+                        WriteLine(" Please insert valid number.\n");
+                        //log
+                        textWriter.WriteLine($"{DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
+                                             $"{DateTime.Now} - User provided electricity price in incorrect format.");
+                        textWriter.Flush();
+                    }
                 }
             }
+            else
+            {
+                WriteLine("Using previously saved electricity price level.");
+                //log
+                textWriter.WriteLine($"{DateTime.Now} - -----------------------------\n" +
+                                     $"{DateTime.Now} - Sucsessfully read user saved setting from file.\n" +
+                                     $"{DateTime.Now} - Using previously saved electricity price setting.");
+                textWriter.Flush();
 
+                numericalUserSpecifiedElectricityPrice = result;
+            }
             //MAIN PROCESS LOOP
             //loop for electricity price check and program start up and shut down
             while (true)
@@ -134,11 +141,11 @@ namespace BoincElectricity
                 {
                     //ASK FOR ELECTRICITY DATA
                     Clear();
-                    WriteLine($" {retryCounter}) Requesting data from Elering");
-                    WriteLine(" =========================\n");
+                    WriteLine($" {retryCounter}) Requesting data from Elering\n" +
+                               " =========================\n");
                     //log
-                    textWriter.WriteLine($"{DateTime.Now} - -----------------------------");
-                    textWriter.WriteLine($"{DateTime.Now} - Requesting data from Elering.");
+                    textWriter.WriteLine($"{DateTime.Now} - -----------------------------\n" +
+                                         $"{DateTime.Now} - Requesting data from Elering.");
                     textWriter.Flush();
 
                     elering.PublicGetApiData();   //getting data from elering
@@ -147,27 +154,28 @@ namespace BoincElectricity
                     try
                     {
                         //CHECK FOR ALL RUNNING PROCESSES
+                        retryCounter = 1;
                         PriceText(elering.TimeFromElering, elering.PriceFromElering);     //Show acquired data from Elering
                         WriteLine(" Checking for running boinc process ");
                         //log
-                        textWriter.WriteLine($"{DateTime.Now} - -----------------------------");
-                        textWriter.WriteLine($"{DateTime.Now} - Calculated seconds till next o'clock: {secondsTillNextHour / 1000}.");
-                        textWriter.WriteLine($"{DateTime.Now} - Requested data from Elering: {elering.TimeFromElering} : {elering.PriceFromElering}.");
-                        textWriter.WriteLine($"{DateTime.Now} - Checking for running processes.");
+                        textWriter.WriteLine($"{DateTime.Now} - -----------------------------\n" +
+                                             $"{DateTime.Now} - Calculated seconds till next o'clock: {secondsTillNextHour / 1000}.\n" +
+                                             $"{DateTime.Now} - Requested data from Elering: {elering.TimeFromElering} : {elering.PriceFromElering}.\n" +
+                                             $"{DateTime.Now} - Checking for running processes.");
                         textWriter.Flush();
 
                         Process[] processList = Process.GetProcessesByName("BOINC");   //Search for running processes by name
                         string allRunningProcesses = processList[0].ToString();   //convert acquired process into string for later use
 
                         //CHECK FOR RUNNING EXTERNAL PROCESS
-                        if (elering.PriceFromElering <= numericalSpecifiedElectricityPrice && allRunningProcesses is "System.Diagnostics.Process (boinc)")    //if process running and price is below specified, continue running boinc
+                        if (elering.PriceFromElering <= numericalUserSpecifiedElectricityPrice && allRunningProcesses is "System.Diagnostics.Process (boinc)")    //if process running and price is below specified, continue running boinc
                         {
-                            WriteLine(" Electricity price is still good!");
-                            WriteLine(" Boinc will continue crunching numbers.");
+                            WriteLine(" Electricity price is still good!\n" +
+                                      " Boinc will continue crunching numbers.");
                             //log
-                            textWriter.WriteLine($"{DateTime.Now} - -----------------------------");
-                            textWriter.WriteLine($"{DateTime.Now} - BOINC process is running.");
-                            textWriter.WriteLine($"{DateTime.Now} - Requested data from Elering was below user specified level. BOINC processes continued running.");
+                            textWriter.WriteLine($"{DateTime.Now} - -----------------------------\n" +
+                                                 $"{DateTime.Now} - BOINC process is running.\n" +
+                                                 $"{DateTime.Now} - Requested data from Elering was below user specified level. BOINC processes continued running.");
                             textWriter.Flush();
                             Thread.Sleep(secondsTillNextHour);  //stop process for one hour inorder to check electricity price again one hour later
                         }
@@ -175,12 +183,12 @@ namespace BoincElectricity
                         {
                             try
                             {
-                                WriteLine(" Price is too high for cheap number crunching!");
-                                WriteLine(" Will check price again at next o'clock.");
-                                WriteLine(" Shutting BOINC down!");
+                                WriteLine(" Price is too high for cheap number crunching!\n" +
+                                          " Will check price again at next o'clock.\n" +
+                                          " Shutting BOINC down!");
                                 //log
-                                textWriter.WriteLine($"{DateTime.Now} - -----------------------------");
-                                textWriter.WriteLine($"{DateTime.Now} - Requested data from Elering was above user specified level.");
+                                textWriter.WriteLine($"{DateTime.Now} - -----------------------------\n" +
+                                                     $"{DateTime.Now} - Requested data from Elering was above user specified level.");
                                 textWriter.Flush();
 
                                 //closing BOINC processes the hard, not the best, way
@@ -200,9 +208,9 @@ namespace BoincElectricity
                                 Clear();
                                 WriteLine(e);
                                 //log
-                                textWriter.WriteLine($"{DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                                textWriter.WriteLine($"{DateTime.Now} - Error in closing BOINC processes.");
-                                textWriter.WriteLine($"{DateTime.Now} - {e}");
+                                textWriter.WriteLine($"{DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
+                                                     $"{DateTime.Now} - Error in closing BOINC processes.\n" +
+                                                     $"{DateTime.Now} - {e}");
                                 textWriter.Flush();
                                 break;
                             }
@@ -214,12 +222,12 @@ namespace BoincElectricity
                         PriceText(elering.TimeFromElering, elering.PriceFromElering);     //Show aqcuired data from Elering
                         WriteLine(" Boinc is not crunching numbers.\n");
                         //log
-                        textWriter.WriteLine($"{DateTime.Now} - -----------------------------");
-                        textWriter.WriteLine($"{DateTime.Now} - BOINC processes were not running.");
+                        textWriter.WriteLine($"{DateTime.Now} - -----------------------------\n" +
+                                             $"{DateTime.Now} - BOINC processes were not running.");
                         textWriter.Flush();
 
                         //START EXTERNAL PROCESS
-                        if (elering.PriceFromElering <= numericalSpecifiedElectricityPrice)   //if price is below 45€/MWh and got data from elering, proceed to start process
+                        if (elering.PriceFromElering <= numericalUserSpecifiedElectricityPrice)   //if price is below 45€/MWh and got data from elering, proceed to start process
                         {
                             //log
                             textWriter.WriteLine($"{DateTime.Now} - Started BOINC.");
@@ -231,8 +239,8 @@ namespace BoincElectricity
 
                             secondsTillNextHour = elering.UpdateRemainingSecondsTillOClock();     //update remaining seconds till next o'clock
                             
-                            WriteLine(" BOINC started crunching numbers!");
-                            WriteLine(" Will check price again at next o'clock.");
+                            WriteLine(" BOINC started crunching numbers!\n" +
+                                      " Will check price again at next o'clock.");
                             //log
                             textWriter.WriteLine($"{DateTime.Now} - Closed BOINC to tray.");
                             textWriter.Flush();
@@ -241,8 +249,8 @@ namespace BoincElectricity
                         //WAIT FOR SUITABLE MOMENT TO START PROCESS
                         else
                         {
-                            WriteLine(" Price is still too high for cruncing numbers!");
-                            WriteLine(" Will check price again at next o'clock.");
+                            WriteLine(" Price is still too high for cruncing numbers!\n" +
+                                      " Will check price again at next o'clock.");
                             //log
                             textWriter.WriteLine($"{DateTime.Now} - Requested data from Elering was above user specified level. BOINC was not started.");
                             textWriter.Flush();
@@ -259,8 +267,8 @@ namespace BoincElectricity
                 {
                     WriteLine(" Could not get Elering data from internet.\n");
                     //log
-                    textWriter.WriteLine($"{DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                    textWriter.WriteLine($"{DateTime.Now} - Program could not get data from Elering.");
+                    textWriter.WriteLine($"{DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
+                                         $"{DateTime.Now} - Program could not get data from Elering.");
                     textWriter.Flush();
                     retryCounter++;
                     Thread.Sleep(5000);
@@ -271,10 +279,29 @@ namespace BoincElectricity
         static void PriceText(string _time, decimal _price)
         {
             Clear();
-            WriteLine(" Requested data from Elering!\n");
-            WriteLine(" Electricity price right now");
-            WriteLine(" =========================\n");
-            WriteLine($" {_time} : {_price} €/MWh\n");
+            WriteLine(" Requested data from Elering!\n" +
+                      " Electricity price right now\n" +
+                      " =========================\n" +
+                     $" {_time} : {_price} €/MWh\n");
+        }
+        static void CreateDirectories()
+        {
+            if (!Directory.Exists("C:\\BoincElectricity\\"))
+            {
+                Directory.CreateDirectory("C:\\BoincElectricity\\");
+            }
+            if (!File.Exists("C:\\BoincElectricity\\Boinc-Electricity-User-Settings.txt"))
+            {
+                File.Create("C:\\BoincElectricity\\Boinc-Electricity-User-Settings.txt").Close();
+            }
+        }
+        static decimal NumericalUserInput(string input)
+        {
+            if (input.Contains("."))
+            {
+                input = input.Replace(".", ",");
+            }
+            return decimal.Parse(input);
         }
     }
 }

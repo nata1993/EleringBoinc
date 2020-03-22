@@ -5,7 +5,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
     <PublishSingleFile>true</PublishSingleFile>
-    <Version>1.2.2</Version>
+    <Version>1.3.1</Version>
     <Authors>Bogdan Parubok</Authors>
     <Company />
     <Product>Boinc Electricity Price Follower</Product>
@@ -15,46 +15,59 @@
     </Description>
     <Copyright>Bogdan Parubok</Copyright>
     <PackageReleaseNotes>
+      ! - bug
+      ? - improvement
+      * - update
+      v1.3.1
+      ______
+      ? - Updated code for easier maintainability.
+      
+      v1.3.0
+      ______
+      * - Created method for checking if user previously provided electricity price level. If not, ask
+          user to provide such data and save it to file for later use by program.
+      ? - Rewritten code little bit for easier maintainability and testing aswell as bug tracking.
+      
       v1.2.2
       ______
-      Minor improvements.
+      ? - Minor improvements.
       
       v1.2.1
       ______
-      Fixed bug where program crashed when o'clock happened and program asked from Elering electricity
-      price but was unable to acquire data. Implemented 10 seconds buffer time for such occurence.
+      ! - Fixed bug where program crashed when o'clock happened and program asked from Elering electricity
+          price but was unable to acquire data. Implemented 10 seconds buffer time for such occurence.
       
       v1.2.0
       ______
-      Fixed Elering data setters bug where Elering data could be modified in the main program method.
-      Added method for calculating remaining seconds till next o'clock with additional 5 seconds for 
-      confirmed data acquisition from Elering.
-      Rewritten code for easier reading of program text and log text.
+      ! - Fixed Elering data setters bug where Elering data could be modified in the main program method.
+      * - Added method for calculating remaining seconds till next o'clock with additional 5 seconds for 
+          confirmed data acquisition from Elering.
+      ? - Rewritten code for easier reading of program text and log text.
 
       v1.1.1
       ______
-      Moved method of user input for electricity price level for asking only once when program starts.
+      ? - Moved method of user input for electricity price level for asking only once when program starts.
 
       v1.1.0
       ______
-      Added mechanism for writing working and error log of program.
+      * - Added mechanism for writing working and error log of program.
       
       v1.0.3
       ______
-      Added method that distinguishes between user inputed value whenever it is written with comma or dot. 
-      Method replaces input with dot to input with comma.
+      * - Added method that distinguishes between user inputed value whenever it is written with comma or dot. 
+          Method also replaces input with dot to input with comma.
 
       v1.0.2
       ______
-      Added method for user to provide electricity price level from which program will turn BOINC on or off.
+      * - Added method for user to provide electricity price level from which program will turn BOINC on or off.
 
       v1.0.1
       ______
-      Minor language mistakes corrected.
+      ? - Minor language mistakes corrected.
 
       v1.0.0
       ______
-      Initial release or Console Application.
+      * - Initial release or Console Application.
     </PackageReleaseNotes>
     <RepositoryUrl>https://github.com/nata1993/EleringBoinc.git</RepositoryUrl>
     <NeutralLanguage>en-GB</NeutralLanguage>
