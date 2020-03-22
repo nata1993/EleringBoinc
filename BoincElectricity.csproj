@@ -5,37 +5,48 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
     <PublishSingleFile>true</PublishSingleFile>
-    <Version>1.1.1</Version>
+    <Version>1.2.0</Version>
     <Authors>Bogdan Parubok</Authors>
     <Company />
     <Product>Boinc Electricity Price Follower</Product>
-    <Description>A program that follows local electricity price and turns BOINC program on based on electricity price at the moment. When electricity price is above user provided level, BOINC shuts down, otherwise it keeps running.</Description>
+    <Description>
+      A program that follows local electricity price and turns BOINC program on based on electricity price at the moment. 
+      When electricity price is above user provided level, BOINC shuts down, otherwise it keeps running.
+    </Description>
     <Copyright>Bogdan Parubok</Copyright>
     <PackageReleaseNotes>
-v1.1.1
-______
-Moved method of user input for electricity price level for asking only once when program starts.
+      v1.2.0
+      ______
+      Fixed Elering data setters bug where Elering data could be modified in the main program method.
+      Added method for calculating remaining seconds till next o'clock with additional 5 seconds for 
+      confirmed data acquisition from Elering.
+      Rewritten code for easier reading of program text and log text.
 
-v1.1.0
-______
-Added mechanism for writing program working and error log.
+      v1.1.1
+      ______
+      Moved method of user input for electricity price level for asking only once when program starts.
+
+      v1.1.0
+      ______
+      Added mechanism for writing working and error log of program.
       
-v1.0.3
-______
-Added method that distinguishes between user inputed value whenever it is written with comma or dot. 
-Method replaces input with dot to input with comma.
+      v1.0.3
+      ______
+      Added method that distinguishes between user inputed value whenever it is written with comma or dot. 
+      Method replaces input with dot to input with comma.
 
-v1.0.2
-______
-Added method for user to provide electricity price level from which program will turn BOINC on or off.
+      v1.0.2
+      ______
+      Added method for user to provide electricity price level from which program will turn BOINC on or off.
 
-v1.0.1
-______
-Minor language mistakes corrected.
+      v1.0.1
+      ______
+      Minor language mistakes corrected.
 
-v1.0.0
-______
-Initial release or Console Application.</PackageReleaseNotes>
+      v1.0.0
+      ______
+      Initial release or Console Application.
+    </PackageReleaseNotes>
     <RepositoryUrl>https://github.com/nata1993/EleringBoinc.git</RepositoryUrl>
     <NeutralLanguage>en-GB</NeutralLanguage>
   </PropertyGroup>

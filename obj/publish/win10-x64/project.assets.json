@@ -68,7 +68,7 @@
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
-    "version": "1.1.1",
+    "version": "1.2.0",
     "restore": {
       "projectUniqueName": "C:\\Users\\Kebo\\Desktop\\Kool\\programmeerimine\\BoincElectricity\\BoincElectricity.csproj",
       "projectName": "BoincElectricity",
