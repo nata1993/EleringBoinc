@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -17,23 +16,6 @@ using static System.Console;
 
 namespace BoincElectricity
 {
-    class EleringDataApi
-    {
-        public class Ee
-        {
-            public int Timestamp { get; set; }
-            public double Price { get; set; }
-        }
-        public class Data
-        {
-            public List<Ee> Ee { get; set; }
-        }
-        public class EleringData
-        {
-            public Data Data { get; set; }
-            public bool Status { get; set; }
-        }
-    }
     class Elering
     {
         private protected readonly string eleringApiLink = "https://dashboard.elering.ee/api/nps/price";
@@ -49,6 +31,7 @@ namespace BoincElectricity
             string formatedDate = date.ToString("dd.MM.yyyy HH:mm");
             return formatedDate;
         }
+        //Get data from elering
         private void GetApiData()
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(eleringApiLink);
@@ -73,10 +56,10 @@ namespace BoincElectricity
             DateTime nextDtElering = new DateTime(1970, 1, 1, 0, 0, 0).AddHours(1).AddSeconds(timestampFromElering).ToLocalTime();  //create time from elering timestamp + 1 hour (next hour)
             DateTime dtNow = DateTime.Now;  //create time at the moment
             TimeSpan result = nextDtElering.Subtract(dtNow); //substract time at the moment from next hour elering timestamp
-            return Convert.ToInt32((result.TotalSeconds * 1000) + 10000); //convert substraction result to timestamp in millisecondsand add 10 000 (10 seconds)
+            return Convert.ToInt32((result.TotalSeconds * 1000) + 10000); //convert substraction result to timestamp in millisecondsand and add 10 000 milliseconds (10 seconds)
         }
 
-        public int PublicRemainingSeconds()
+        public int UpdateRemainingSecondsTillOClock()
         {
             return RemainingSecondsTillNextHour();
         }
@@ -159,7 +142,7 @@ namespace BoincElectricity
                     textWriter.Flush();
 
                     elering.PublicGetApiData();   //getting data from elering
-                    secondsTillNextHour = elering.PublicRemainingSeconds(); //HERE IS DATA NOT UPDATED!
+                    secondsTillNextHour = elering.UpdateRemainingSecondsTillOClock();
 
                     try
                     {
@@ -193,7 +176,6 @@ namespace BoincElectricity
                             try
                             {
                                 WriteLine(" Price is too high for cheap number crunching!");
-                                WriteLine(" Shutting down Boinc!");
                                 WriteLine(" Will check price again at next o'clock.");
                                 WriteLine(" Shutting BOINC down!");
                                 //log
@@ -210,6 +192,7 @@ namespace BoincElectricity
                                 //log
                                 textWriter.WriteLine($"{DateTime.Now} - Killed brutaly BOINC processes.");
                                 textWriter.Flush();
+                                Thread.Sleep(secondsTillNextHour);  //stop process for one hour inorder to check electricity price again one hour later
                             }
                             //if could not close boinc processes, this exception is thrown and program is closing while error writing to log
                             catch (Exception e)
@@ -223,7 +206,6 @@ namespace BoincElectricity
                                 textWriter.Flush();
                                 break;
                             }
-                            Thread.Sleep(secondsTillNextHour);  //stop process for one hour inorder to check electricity price again one hour later
                         }
                     }
                     //EXTERNAL PROCESS IS NOT RUNNING
@@ -247,10 +229,10 @@ namespace BoincElectricity
                             Thread.Sleep(15000);    //wait 15 seconds for BOINC program to connect to internet and get data from internet
                             boinc.CloseMainWindow();    //close program window automatically to tray
 
-                            secondsTillNextHour = elering.PublicRemainingSeconds();
+                            secondsTillNextHour = elering.UpdateRemainingSecondsTillOClock();     //update remaining seconds till next o'clock
                             
                             WriteLine(" BOINC started crunching numbers!");
-                            WriteLine(" Will check price again at next o'clock.\n");
+                            WriteLine(" Will check price again at next o'clock.");
                             //log
                             textWriter.WriteLine($"{DateTime.Now} - Closed BOINC to tray.");
                             textWriter.Flush();
@@ -260,7 +242,7 @@ namespace BoincElectricity
                         else
                         {
                             WriteLine(" Price is still too high for cruncing numbers!");
-                            WriteLine(" Will check price again at next o'clock.\n");
+                            WriteLine(" Will check price again at next o'clock.");
                             //log
                             textWriter.WriteLine($"{DateTime.Now} - Requested data from Elering was above user specified level. BOINC was not started.");
                             textWriter.Flush();
