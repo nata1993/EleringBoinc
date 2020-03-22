@@ -73,7 +73,7 @@ namespace BoincElectricity
             DateTime nextDtElering = new DateTime(1970, 1, 1, 0, 0, 0).AddHours(1).AddSeconds(timestampFromElering).ToLocalTime();  //create time from elering timestamp + 1 hour (next hour)
             DateTime dtNow = DateTime.Now;  //create time at the moment
             TimeSpan result = nextDtElering.Subtract(dtNow); //substract time at the moment from next hour elering timestamp
-            return Convert.ToInt32(result.TotalSeconds * 1000); //convert substraction result to timestamp in seconds
+            return Convert.ToInt32((result.TotalSeconds * 1000) + 10000); //convert substraction result to timestamp in millisecondsand add 10 000 (10 seconds)
         }
 
         public int PublicRemainingSeconds()
@@ -159,7 +159,7 @@ namespace BoincElectricity
                     textWriter.Flush();
 
                     elering.PublicGetApiData();   //getting data from elering
-                    secondsTillNextHour = elering.PublicRemainingSeconds();
+                    secondsTillNextHour = elering.PublicRemainingSeconds(); //HERE IS DATA NOT UPDATED!
 
                     try
                     {
@@ -244,7 +244,7 @@ namespace BoincElectricity
                             textWriter.Flush();
 
                             boinc.Start();  //start process based on previous setup
-                            Thread.Sleep(13000);    //wait 13 seconds for BOINC program to connect to internet and get data from internet
+                            Thread.Sleep(15000);    //wait 15 seconds for BOINC program to connect to internet and get data from internet
                             boinc.CloseMainWindow();    //close program window automatically to tray
 
                             secondsTillNextHour = elering.PublicRemainingSeconds();
@@ -266,6 +266,10 @@ namespace BoincElectricity
                             textWriter.Flush();
                             Thread.Sleep(secondsTillNextHour);  //stop process for one hour inorder to check electricity price again one hour later
                         }
+                    }
+                    catch (Exception e)
+                    {
+                        textWriter.WriteLine(e);
                     }
                 }
                 //IF NO ELECTRICITY DATA, TRY AGAIN

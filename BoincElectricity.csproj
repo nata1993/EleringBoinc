@@ -15,6 +15,11 @@
     </Description>
     <Copyright>Bogdan Parubok</Copyright>
     <PackageReleaseNotes>
+      v1.2.1
+      ______
+      Fixed bug where program crashed when o'clock happened and program asked from Elering electricity
+      price but was unable to acquire data. Implemented 10 seconds buffer time for such occurence.
+      
       v1.2.0
       ______
       Fixed Elering data setters bug where Elering data could be modified in the main program method.
