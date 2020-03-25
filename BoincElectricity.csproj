@@ -19,6 +19,10 @@
       ? - improvement
       * - update
       ======
+      v1.4.0
+      ______
+      ? - Complitely rewritten code for more structured code and easier reading.
+      ======
       v1.3.2
       ______
       ! - Fixed bug where release notes file was not created.
