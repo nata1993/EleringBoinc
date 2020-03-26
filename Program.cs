@@ -81,8 +81,12 @@ namespace BoincElectricity
         private protected string boincProgram = @"C:\Program Files\BOINC program\boincmgr";
         static void Main()
         {
-            //SETUP 
+            //SETUP
+            //setup console window
             OutputEncoding = Encoding.UTF8;
+            SetWindowSize(65, 15);
+            BufferWidth = 65;
+
             CreateDirectories();
             //objects and writers
             StreamWriter logWriter = new StreamWriter(mainDirectory + logFile, true);       //StreamWritter is adding data to log file, not overwriting
@@ -155,7 +159,7 @@ namespace BoincElectricity
                                             $" {DateTime.Now} - Requesting data from Elering.");
                         logWriter.Flush();
 
-                        elering.PublicGetApiData();                                             //getting data from elering
+                        elering.PublicGetApiData();                                         //getting data from elering
                         mainProgram.secondsTillNextHour = elering.CalculateRemainingSecondsTillOClock();
                         break;
                     }
@@ -167,11 +171,11 @@ namespace BoincElectricity
                                             $" {DateTime.Now} - Program could not get data from Elering.");
                         logWriter.Flush();
                         mainProgram.retryCounter++;
-                        Thread.Sleep(5000);                                                     //retry every five seconds
+                        Thread.Sleep(5000);                                                 //retry every five seconds
                     }
                 }
                 //CHECK FOR RUNNING PROCESSES
-                WritePriceText(elering.TimeFromElering, elering.PriceFromElering);              //print acquired data from Elering
+                WritePriceText(elering.TimeFromElering, elering.PriceFromElering);          //print acquired data from Elering
                 WriteLine(" Checking for running boinc processes.\n");
                 //log
                 logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
@@ -179,17 +183,17 @@ namespace BoincElectricity
                                     $" {DateTime.Now} - Requested data from Elering: {elering.TimeFromElering} : {elering.PriceFromElering}.\n" +
                                     $" {DateTime.Now} - Checking for running processes.");
                 logWriter.Flush();
-                mainProgram.retryCounter = 1;                                                   //reset retry counter
+                mainProgram.retryCounter = 1;                                               //reset retry counter
                 try
                 {
-                    Process[] processList = Process.GetProcessesByName("BOINC");                //Search for running processes by name
+                    Process[] processList = Process.GetProcessesByName("BOINC");            //Search for running processes by name
                     mainProgram.allRunningProcesses = processList[0].ToString();                            //convert acquired process into string for later use
-                    Thread.Sleep(2000);                                                         //wait for two seconds for user to read
+                    Thread.Sleep(2000);                                                     //wait for two seconds for user to read
                 }
                 catch (IndexOutOfRangeException)
                 {
-                    mainProgram.allRunningProcesses = "-1";                                     //save index out of range for later use
-                    WritePriceText(elering.TimeFromElering, elering.PriceFromElering);          //Show aqcuired data from Elering
+                    mainProgram.allRunningProcesses = "-1";                                 //save index out of range for later use
+                    WritePriceText(elering.TimeFromElering, elering.PriceFromElering);      //Show aqcuired data from Elering
                     WriteLine(" Boinc is not crunching numbers.\n");
                     //log
                     logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
@@ -200,7 +204,7 @@ namespace BoincElectricity
                 //if there is no process running, BOINC process is started
                 if (mainProgram.allRunningProcesses == "-1")
                 {
-                    WritePriceText(elering.TimeFromElering, elering.PriceFromElering);          //Show aqcuired data from Elering
+                    WritePriceText(elering.TimeFromElering, elering.PriceFromElering);      //Show aqcuired data from Elering
                     WriteLine(" Boinc is not crunching numbers.\n");
                     //log
                     logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
@@ -215,9 +219,9 @@ namespace BoincElectricity
                             logWriter.WriteLine($" {DateTime.Now} - Started BOINC.");
                             logWriter.Flush();
 
-                            boinc.Start();                                                          //start process based on previous setup
-                            Thread.Sleep(15000);                                                    //wait 15 seconds for BOINC program to connect to internet and get data from internet
-                            boinc.CloseMainWindow();                                                //close program window automatically to tray
+                            boinc.Start();                                                  //start process based on previous setup
+                            Thread.Sleep(15000);                                            //wait 15 seconds for BOINC program to connect to internet and get data from internet
+                            boinc.CloseMainWindow();                                        //close program window automatically to tray
 
                             mainProgram.secondsTillNextHour = elering.CalculateRemainingSecondsTillOClock();     //update remaining seconds till next o'clock
 
@@ -226,7 +230,7 @@ namespace BoincElectricity
                             //log
                             logWriter.WriteLine($" {DateTime.Now} - Closed BOINC to tray.");
                             logWriter.Flush();
-                            Thread.Sleep(mainProgram.secondsTillNextHour);                          //stop process for one hour inorder to check electricity price again one hour later
+                            Thread.Sleep(mainProgram.secondsTillNextHour);                  //stop process for one hour inorder to check electricity price again one hour later
                         }
                         catch (Exception e)
                         {
@@ -235,7 +239,7 @@ namespace BoincElectricity
                             logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
                                                 $" {DateTime.Now} - Could not start BOINC program for some reason.\n" +
                                                 $" {e}");
-                            mainProgram.mainLoop = false;                                           //upon massive error, stop main loop
+                            mainProgram.mainLoop = false;                                   //upon massive error, stop main loop
                         }
                     }
                     //WAIT FOR GOOD PRICE TO START PROCESS
@@ -246,7 +250,7 @@ namespace BoincElectricity
                         //log
                         logWriter.WriteLine($"{DateTime.Now} - Requested data from Elering was above user specified level. BOINC was not started.");
                         logWriter.Flush();
-                        Thread.Sleep(mainProgram.secondsTillNextHour);                              //stop process for one hour inorder to check electricity price again one hour later
+                        Thread.Sleep(mainProgram.secondsTillNextHour);                      //stop process for one hour inorder to check electricity price again one hour later
                     }
                 }
                 //if BOINC is already running
@@ -263,7 +267,7 @@ namespace BoincElectricity
                                             $" {DateTime.Now} - BOINC process is running.\n" +
                                             $" {DateTime.Now} - Requested data from Elering was below user specified level. BOINC processes continued running.");
                         logWriter.Flush();
-                        Thread.Sleep(mainProgram.secondsTillNextHour);                              //stop process for one hour inorder to check electricity price again one hour later
+                        Thread.Sleep(mainProgram.secondsTillNextHour);                      //stop process for one hour inorder to check electricity price again one hour later
                     }
                     //IF PRICE IS BAD, TERMINATE BOINC
                     else
@@ -285,7 +289,7 @@ namespace BoincElectricity
                             //log
                             logWriter.WriteLine($" {DateTime.Now} - Killed brutaly BOINC processes.");
                             logWriter.Flush();
-                            Thread.Sleep(mainProgram.secondsTillNextHour);              //stop process for one hour inorder to check electricity price again one hour later
+                            Thread.Sleep(mainProgram.secondsTillNextHour);                  //stop process for one hour inorder to check electricity price again one hour later
                         }
                         //if could not kill boinc processes, this exception is thrown and program is closing while error is written to log
                         catch (Exception e)
@@ -330,8 +334,11 @@ namespace BoincElectricity
         {
             string releaseNotes =
                 " ! - bug\n ? - improvement\n * - update\n" +
+                " ======\n v1.4.1\n ______\n" +
+                " ? - Console window size is now fixed to 65 width units and 15 height units.\n" +
+                " * - Program compiled with \"ReadyToRun\" function which according to Microsoft, improves program startup.\n" +
                 " ======\n v1.4.0\n ______\n" +
-                " ? -Complitely rewritten code for more structured code and easier reading.\n" +
+                " ? - Complitely rewritten code for more structured code and easier reading.\n" +
                 " ======\n v1.3.2\n ______\n" +
                 " ! - Fixed bug where release notes file was not created.\n" +
                 " * - Main program is now object as well as main method parameters are hidden.\n" +
@@ -366,7 +373,7 @@ namespace BoincElectricity
                 " ======\n v1.0.1\n ______\n" +
                 " ? - Minor language mistakes corrected.\n" +
                 " ======\n v1.0.0\n ______\n" +
-                " * -Initial release or Console Application.\n";
+                " * - Initial release or Console Application.\n";
             File.WriteAllText(path, releaseNotes);
         }
     }

@@ -5,7 +5,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
     <PublishSingleFile>true</PublishSingleFile>
-    <Version>1.3.1</Version>
+    <Version>1.4.1</Version>
     <Authors>Bogdan Parubok</Authors>
     <Company />
     <Product>Boinc Electricity Price Follower</Product>
@@ -18,6 +18,11 @@
       ! - bug
       ? - improvement
       * - update
+      ======
+      v1.4.1
+      ______
+      ? - Console window size is now fixed to 65 width units and 15 height units.
+      * - Program compiled with "ReadyToRun" function which according to Microsoft, improves program startup.
       ======
       v1.4.0
       ______
