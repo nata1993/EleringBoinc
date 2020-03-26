@@ -1,12 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "slqAJO7fbImTvg7uk55K4hE734PxiolG/hUgovm85Lk+0qxik6W1z1y0Vnf3fsf8biBB5uu/yxYS7xzCIH/rtw==",
+  "dgSpecHash": "kqmHkR0ST8TYQnv+RUCvmYrZyOc3VEhe1VkmMJGq5jOGQjimSNeHLthjZNP1R1ms0VMDyJ/bl3dwxNbHjuOWWw==",
   "success": true,
   "projectFilePath": "C:\\Users\\Kebo\\Desktop\\Kool\\programmeerimine\\BoincElectricity\\BoincElectricity.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Kebo\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512",
-    "C:\\Users\\Kebo\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\3.1.2\\microsoft.windowsdesktop.app.runtime.win-x64.3.1.2.nupkg.sha512",
     "C:\\Users\\Kebo\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\3.1.2\\microsoft.netcore.app.runtime.win-x64.3.1.2.nupkg.sha512",
+    "C:\\Users\\Kebo\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\3.1.2\\microsoft.windowsdesktop.app.runtime.win-x64.3.1.2.nupkg.sha512",
     "C:\\Users\\Kebo\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\3.1.2\\microsoft.aspnetcore.app.runtime.win-x64.3.1.2.nupkg.sha512"
   ],
   "logs": []

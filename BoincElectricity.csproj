@@ -5,7 +5,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
     <PublishSingleFile>true</PublishSingleFile>
-    <Version>1.4.1</Version>
+    <Version>1.4.2</Version>
     <Authors>Bogdan Parubok</Authors>
     <Company />
     <Product>Boinc Electricity Price Follower</Product>
@@ -18,6 +18,13 @@
       ! - bug
       ? - improvement
       * - update
+      ======
+      v1.4.2
+      ______
+      ? - Code clean-up: 1) Removed one unnecessary parameter and its conversion.
+                         2) Removed double loging when BOINC was not running.
+      ? - User can not provide zero or negative signed electricity price as baseline.
+      ? - Changed when happens flushing of logs to log file.
       ======
       v1.4.1
       ______

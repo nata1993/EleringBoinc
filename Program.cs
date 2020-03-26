@@ -67,9 +67,8 @@ namespace BoincElectricity
     {
         //parameters
         protected int retryCounter = 1;                                                     //counter for elering data aquisition
-        protected int secondsTillNextHour;
-        private protected string userProvidedElectricityPrice;                              //user provided maximum electricity price he/she wants to run boinc at
-        private protected decimal numericalUserProvidedElectricityPrice;                    //numerical representation of user procided electricity price
+        protected int secondsTillOClock;
+        private protected decimal userProvidedElectricityPrice;                             //user provided maximum electricity price he/she wants to run boinc at
         protected bool savedPrice;
         private protected string allRunningProcesses;
         private protected bool mainLoop = true;
@@ -82,11 +81,7 @@ namespace BoincElectricity
         static void Main()
         {
             //SETUP
-            //setup console window
-            OutputEncoding = Encoding.UTF8;
-            SetWindowSize(65, 15);
-            BufferWidth = 65;
-
+            ProgramSetUp();
             CreateDirectories();
             //objects and writers
             StreamWriter logWriter = new StreamWriter(mainDirectory + logFile, true);       //StreamWritter is adding data to log file, not overwriting
@@ -99,38 +94,50 @@ namespace BoincElectricity
             logWriter.WriteLine($" {DateTime.Now} - ========================== NEW PROGRAM STARTUP ====================================\n" +
                                 $" {DateTime.Now} - Setting up program ressources: Directory, StreamWriter, API object, Process object.");
             logWriter.Flush();
-            //read settings file for saved data
+            //read settings file for saved data - if tryparse fails e.g false, ask user to provide baseline price
             mainProgram.savedPrice = decimal.TryParse(File.ReadAllText(mainDirectory + settingsFile).ToString(), 
                                                       out decimal convertedResult);
             //ASK FOR USER INPUT
             if (!mainProgram.savedPrice)
             {
+                CursorVisible = true;
                 while (true)
                 {
                     try
                     {
-                        Write(" Please provide highest electricity price you want to run\n program in megawats per hour pricing (e.g 45 as in 45€/MWh): ");
-                        mainProgram.userProvidedElectricityPrice = ReadLine();
-                        mainProgram.numericalUserProvidedElectricityPrice = decimal.Parse(mainProgram.userProvidedElectricityPrice.Replace(".", ","));
-                        File.WriteAllText(mainDirectory + settingsFile, mainProgram.userProvidedElectricityPrice);
+                        Write(" Please provide baseline electricity price you want to run\n program in megawatts per hour pricing (e.g 45 as in 45€/MWh): ");
+                        mainProgram.userProvidedElectricityPrice = decimal.Parse(ReadLine().Replace(".", ","));
+                        if (mainProgram.userProvidedElectricityPrice <= 0)
+                        {
+                            throw new ArgumentException("Zero or negative number user input!");
+                        }
+                        File.WriteAllText(mainDirectory + settingsFile, mainProgram.userProvidedElectricityPrice.ToString());
                         //log
                         logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
                                             $" {DateTime.Now} - User provided electricity price: {mainProgram.userProvidedElectricityPrice}.\n" +
-                                            $" {DateTime.Now} - User provided numerical translation of electricity price: {mainProgram.numericalUserProvidedElectricityPrice}.\n" +
+                                            $" {DateTime.Now} - User provided numerical translation of electricity price: {mainProgram.userProvidedElectricityPrice}.\n" +
                                             $" {DateTime.Now} - Saved user provided numerical translation of electricity price to settings file.");
-                        logWriter.Flush();
                         break;
                     }
-                    catch (Exception)
+                    catch (FormatException)
                     {
                         Clear();
                         WriteLine(" Please insert valid number.\n");
                         //log
                         logWriter.WriteLine($" {DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
-                                            $" {DateTime.Now} - User provided electricity price in incorrect format.");
-                        logWriter.Flush();
+                                            $" {DateTime.Now} - User provided baseline electricity price in incorrect format" +
+                                            $" {DateTime.Now} - or there was no input at all.");
+                    }
+                    catch (ArgumentException)
+                    {
+                        Clear();
+                        WriteLine(" You must provide number that is positive signed number e.g. not zero and not with minus sign.\n");
+                        //log
+                        logWriter.WriteLine($" {DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
+                                            $" {DateTime.Now} - User provided zero or negative electricity price.");
                     }
                 }
+                CursorVisible = false;                                                      //turn off cursor after user inputed electricity price
             }
             else
             {
@@ -139,10 +146,10 @@ namespace BoincElectricity
                 logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
                                     $" {DateTime.Now} - Successfully read user saved setting from file.\n" +
                                     $" {DateTime.Now} - Using previously saved electricity price setting.");
-                logWriter.Flush();
-                mainProgram.numericalUserProvidedElectricityPrice = convertedResult;
+                mainProgram.userProvidedElectricityPrice = convertedResult;                 //asign user provided setting from settings file
                 Thread.Sleep(2000);                                                         //wait two seconds for user to read
             }
+            logWriter.Flush();                                                              //flush all the log from user input to the log file
             //LOOP FOR PROGRAM
             while (mainProgram.mainLoop)
             {
@@ -157,10 +164,9 @@ namespace BoincElectricity
                         //log
                         logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
                                             $" {DateTime.Now} - Requesting data from Elering.");
-                        logWriter.Flush();
 
                         elering.PublicGetApiData();                                         //getting data from elering
-                        mainProgram.secondsTillNextHour = elering.CalculateRemainingSecondsTillOClock();
+                        mainProgram.secondsTillOClock = elering.CalculateRemainingSecondsTillOClock();
                         break;
                     }
                     catch (WebException)
@@ -169,17 +175,17 @@ namespace BoincElectricity
                         //log
                         logWriter.WriteLine($" {DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
                                             $" {DateTime.Now} - Program could not get data from Elering.");
-                        logWriter.Flush();
                         mainProgram.retryCounter++;
                         Thread.Sleep(5000);                                                 //retry every five seconds
                     }
                 }
+                logWriter.Flush();                                                          //flush logs from Elering data request
                 //CHECK FOR RUNNING PROCESSES
                 WritePriceText(elering.TimeFromElering, elering.PriceFromElering);          //print acquired data from Elering
                 WriteLine(" Checking for running boinc processes.\n");
                 //log
                 logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
-                                    $" {DateTime.Now} - Calculated seconds till next o'clock: {mainProgram.secondsTillNextHour / 1000}.\n" +    //calculate milliseconds into seconds
+                                    $" {DateTime.Now} - Calculated seconds till next o'clock: {mainProgram.secondsTillOClock / 1000}.\n" +    //calculate milliseconds into seconds
                                     $" {DateTime.Now} - Requested data from Elering: {elering.TimeFromElering} : {elering.PriceFromElering}.\n" +
                                     $" {DateTime.Now} - Checking for running processes.");
                 logWriter.Flush();
@@ -187,7 +193,7 @@ namespace BoincElectricity
                 try
                 {
                     Process[] processList = Process.GetProcessesByName("BOINC");            //Search for running processes by name
-                    mainProgram.allRunningProcesses = processList[0].ToString();                            //convert acquired process into string for later use
+                    mainProgram.allRunningProcesses = processList[0].ToString();            //convert acquired process into string for later use
                     Thread.Sleep(2000);                                                     //wait for two seconds for user to read
                 }
                 catch (IndexOutOfRangeException)
@@ -206,12 +212,8 @@ namespace BoincElectricity
                 {
                     WritePriceText(elering.TimeFromElering, elering.PriceFromElering);      //Show aqcuired data from Elering
                     WriteLine(" Boinc is not crunching numbers.\n");
-                    //log
-                    logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
-                                        $" {DateTime.Now} - BOINC processes were not running.\n");
-                    logWriter.Flush();
                     //START EXTERNAL PROCESS IF PRICE IS GOOD
-                    if (elering.PriceFromElering <= mainProgram.numericalUserProvidedElectricityPrice)   //if price is below 45€/MWh and got data from elering, proceed to start process
+                    if (elering.PriceFromElering <= mainProgram.userProvidedElectricityPrice)   //if price is below 45€/MWh and got data from elering, proceed to start process
                     {
                         try
                         {
@@ -223,14 +225,14 @@ namespace BoincElectricity
                             Thread.Sleep(15000);                                            //wait 15 seconds for BOINC program to connect to internet and get data from internet
                             boinc.CloseMainWindow();                                        //close program window automatically to tray
 
-                            mainProgram.secondsTillNextHour = elering.CalculateRemainingSecondsTillOClock();     //update remaining seconds till next o'clock
+                            mainProgram.secondsTillOClock = elering.CalculateRemainingSecondsTillOClock();     //update remaining seconds till next o'clock
 
                             WriteLine(" BOINC started crunching numbers!\n" +
                                       " Will check price again at next o'clock.");
                             //log
                             logWriter.WriteLine($" {DateTime.Now} - Closed BOINC to tray.");
                             logWriter.Flush();
-                            Thread.Sleep(mainProgram.secondsTillNextHour);                  //stop process for one hour inorder to check electricity price again one hour later
+                            Thread.Sleep(mainProgram.secondsTillOClock);                    //stop process for one hour inorder to check electricity price again one hour later
                         }
                         catch (Exception e)
                         {
@@ -239,6 +241,7 @@ namespace BoincElectricity
                             logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
                                                 $" {DateTime.Now} - Could not start BOINC program for some reason.\n" +
                                                 $" {e}");
+                            logWriter.Flush();
                             mainProgram.mainLoop = false;                                   //upon massive error, stop main loop
                         }
                     }
@@ -250,14 +253,14 @@ namespace BoincElectricity
                         //log
                         logWriter.WriteLine($"{DateTime.Now} - Requested data from Elering was above user specified level. BOINC was not started.");
                         logWriter.Flush();
-                        Thread.Sleep(mainProgram.secondsTillNextHour);                      //stop process for one hour inorder to check electricity price again one hour later
+                        Thread.Sleep(mainProgram.secondsTillOClock);                        //stop process for one hour inorder to check electricity price again one hour later
                     }
                 }
                 //if BOINC is already running
                 else if (mainProgram.allRunningProcesses == "System.Diagnostics.Process (boinc)")
                 {
                     //IF PRICE IS GOOD
-                    if (elering.PriceFromElering <= mainProgram.numericalUserProvidedElectricityPrice)
+                    if (elering.PriceFromElering <= mainProgram.userProvidedElectricityPrice)
                     {
                         WriteLine(" BOINC is running.\n" +
                                   " Electricity price is still good!\n" +
@@ -267,7 +270,7 @@ namespace BoincElectricity
                                             $" {DateTime.Now} - BOINC process is running.\n" +
                                             $" {DateTime.Now} - Requested data from Elering was below user specified level. BOINC processes continued running.");
                         logWriter.Flush();
-                        Thread.Sleep(mainProgram.secondsTillNextHour);                      //stop process for one hour inorder to check electricity price again one hour later
+                        Thread.Sleep(mainProgram.secondsTillOClock);                        //stop process for one hour inorder to check electricity price again one hour later
                     }
                     //IF PRICE IS BAD, TERMINATE BOINC
                     else
@@ -279,7 +282,6 @@ namespace BoincElectricity
                             //log
                             logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
                                                 $" {DateTime.Now} - Requested data from Elering was above user specified level.");
-                            logWriter.Flush();
                             //closing BOINC processes the hard, not the best, way
                             foreach (Process proc in Process.GetProcessesByName("BOINC"))
                             {
@@ -289,7 +291,7 @@ namespace BoincElectricity
                             //log
                             logWriter.WriteLine($" {DateTime.Now} - Killed brutaly BOINC processes.");
                             logWriter.Flush();
-                            Thread.Sleep(mainProgram.secondsTillNextHour);                  //stop process for one hour inorder to check electricity price again one hour later
+                            Thread.Sleep(mainProgram.secondsTillOClock);                    //stop process for one hour inorder to check electricity price again one hour later
                         }
                         //if could not kill boinc processes, this exception is thrown and program is closing while error is written to log
                         catch (Exception e)
@@ -307,6 +309,14 @@ namespace BoincElectricity
                 }
             }
             ReadLine();
+        }
+        static void ProgramSetUp()
+        {
+            //setup console window
+            OutputEncoding = Encoding.UTF8;
+            SetWindowSize(65, 15);
+            BufferWidth = 65;
+            CursorVisible = false;                                                          //turn off cursor after reading settings file
         }
         static void WritePriceText(string _time, decimal _price)
         {
@@ -334,6 +344,11 @@ namespace BoincElectricity
         {
             string releaseNotes =
                 " ! - bug\n ? - improvement\n * - update\n" +
+                " ======\n v1.4.2\n ______\n" +
+                " ? - Code clean-up: 1) Removed one unnecessary parameter and its conversion.\n" +
+                "                    2) Removed double loging when BOINC was not running.\n" +
+                " ? - User can not provide zero or negative signed electricity price as baseline.\n" +
+                " ? - Changed when happens flushing of logs to log file.\n" + 
                 " ======\n v1.4.1\n ______\n" +
                 " ? - Console window size is now fixed to 65 width units and 15 height units.\n" +
                 " * - Program compiled with \"ReadyToRun\" function which according to Microsoft, improves program startup.\n" +

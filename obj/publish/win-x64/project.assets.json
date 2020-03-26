@@ -12,7 +12,7 @@
         }
       }
     },
-    ".NETCoreApp,Version=v3.1/win10-x64": {
+    ".NETCoreApp,Version=v3.1/win-x64": {
       "Newtonsoft.Json/12.0.3": {
         "type": "package",
         "compile": {
@@ -74,7 +74,7 @@
       "projectName": "BoincElectricity",
       "projectPath": "C:\\Users\\Kebo\\Desktop\\Kool\\programmeerimine\\BoincElectricity\\BoincElectricity.csproj",
       "packagesPath": "C:\\Users\\Kebo\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Kebo\\Desktop\\Kool\\programmeerimine\\BoincElectricity\\obj\\",
+      "outputPath": "C:\\Users\\Kebo\\Desktop\\Kool\\programmeerimine\\BoincElectricity\\obj\\publish\\win-x64\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Microsoft\\Xamarin\\NuGet\\",
@@ -144,7 +144,7 @@
       }
     },
     "runtimes": {
-      "win10-x64": {
+      "win-x64": {
         "#import": []
       }
     }

@@ -11,7 +11,7 @@
         "projectName": "BoincElectricity",
         "projectPath": "C:\\Users\\Kebo\\Desktop\\Kool\\programmeerimine\\BoincElectricity\\BoincElectricity.csproj",
         "packagesPath": "C:\\Users\\Kebo\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Kebo\\Desktop\\Kool\\programmeerimine\\BoincElectricity\\obj\\",
+        "outputPath": "C:\\Users\\Kebo\\Desktop\\Kool\\programmeerimine\\BoincElectricity\\obj\\publish\\win-x64\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Microsoft\\Xamarin\\NuGet\\",
@@ -81,7 +81,7 @@
         }
       },
       "runtimes": {
-        "win10-x64": {
+        "win-x64": {
           "#import": []
         }
       }

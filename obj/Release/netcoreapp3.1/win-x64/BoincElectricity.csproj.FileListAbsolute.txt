@@ -1,0 +1,16 @@
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Release\netcoreapp3.1\win-x64\BoincElectricity.exe
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Release\netcoreapp3.1\win-x64\BoincElectricity.deps.json
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Release\netcoreapp3.1\win-x64\BoincElectricity.runtimeconfig.json
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Release\netcoreapp3.1\win-x64\BoincElectricity.runtimeconfig.dev.json
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Release\netcoreapp3.1\win-x64\BoincElectricity.dll
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Release\netcoreapp3.1\win-x64\BoincElectricity.pdb
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Release\netcoreapp3.1\win-x64\Newtonsoft.Json.dll
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\obj\Release\netcoreapp3.1\win-x64\BoincElectricity.Properties.Resources.resources
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\obj\Release\netcoreapp3.1\win-x64\BoincElectricity.csproj.GenerateResource.cache
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\obj\Release\netcoreapp3.1\win-x64\BoincElectricity.csproj.CoreCompileInputs.cache
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\obj\Release\netcoreapp3.1\win-x64\BoincElectricity.AssemblyInfoInputs.cache
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\obj\Release\netcoreapp3.1\win-x64\BoincElectricity.AssemblyInfo.cs
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\obj\Release\netcoreapp3.1\win-x64\BoincElectricity.csproj.CopyComplete
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\obj\Release\netcoreapp3.1\win-x64\BoincElectricity.dll
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\obj\Release\netcoreapp3.1\win-x64\BoincElectricity.pdb
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\obj\Release\netcoreapp3.1\win-x64\BoincElectricity.genruntimeconfig.cache
