@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -14,70 +13,27 @@ using static System.Console;
 
 namespace BoincElectricity
 {
-    class Elering
+    class UserData
     {
-        private protected readonly string eleringApiLink = "https://dashboard.elering.ee/api/nps/price";
-        private protected string timeFromElering;       //time from elering converted to human readable date and time
-        private protected decimal priceFromElering;     //price from elering without taxes
-        private protected int timestampFromElering;     //timestamp from elering
 
-        string EleringApiLink { get { return eleringApiLink; } }
-        public string TimeFromElering { get { return timeFromElering; }  }
-        public decimal PriceFromElering { get { return priceFromElering; }  }
-        private string FormatDateandTime(int timeStamp)
-        {
-            DateTime date = new DateTime(1970, 1, 1, 0, 0, 0).AddSeconds(timeStamp).ToLocalTime();
-            string formatedDate = date.ToString("dd.MM.yyyy HH:mm");
-            return formatedDate;
-        }
-        //Get data from elering
-        private void GetApiData()
-        {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(EleringApiLink);
-                           request.Method = "GET";
-            var webResponse = request.GetResponse();
-            var webResponseStream = webResponse.GetResponseStream();
-            using var responseReader = new StreamReader(webResponseStream);
-            var response = responseReader.ReadToEnd();
-            EleringDataApi.EleringData elering = JsonConvert.DeserializeObject<EleringDataApi.EleringData>(response);
-            //add data to object
-            timestampFromElering = elering.Data.Ee[^1].Timestamp;
-            timeFromElering = FormatDateandTime(timestampFromElering);
-            priceFromElering = Convert.ToDecimal(elering.Data.Ee[^1].Price);
-        }
-        public void PublicGetApiData()
-        {
-            GetApiData();
-        }
-        //Calculate how many seconds remain till next o'clock
-        private int RemainingSecondsTillNextHour()
-        {
-            DateTime nextDtElering = new DateTime(1970, 1, 1, 0, 0, 0).AddHours(1).AddSeconds(timestampFromElering).ToLocalTime();  //create time from elering timestamp + 1 hour (next hour)
-            DateTime dtNow = DateTime.Now;  //create time at the moment
-            TimeSpan result = nextDtElering.Subtract(dtNow); //substract time at the moment from next hour elering timestamp
-            return Convert.ToInt32((result.TotalSeconds * 1000) + 10000); //convert substraction result to timestamp in millisecondsand and add 10 000 milliseconds (10 seconds)
-        }
-
-        public int CalculateRemainingSecondsTillOClock()
-        {
-            return RemainingSecondsTillNextHour();
-        }
     }
     class Program
     {
         //parameters
-        protected int retryCounter = 1;                                                     //counter for elering data aquisition
-        protected int secondsTillOClock;
-        private protected decimal userProvidedElectricityPrice;                             //user provided maximum electricity price he/she wants to run boinc at
-        protected bool savedPrice;
-        private protected string allRunningProcesses;
-        private protected bool mainLoop = true;
+        static  private protected string[] externalSettings;
+                        protected int retryCounter = 1;                                     //counter for elering data aquisition
+                        protected int secondsTillOClock;
+                private protected decimal userProvidedElectricityPrice;                     //user provided maximum electricity price he/she wants to run boinc at
+                        protected bool savedPrice;
+                private protected string allRunningProcesses;
+                private protected bool mainLoop = true;
         //file names and paths
-        static private protected string mainDirectory = @"C:\BoincElectricity\";            //main directory for log and settings
-        static private protected string logFile = "Boinc-Electricity-Log.txt";
-        static private protected string settingsFile = "Boinc-Electricity-User-Settings.txt";
-        static private protected string releaseNotesFile = "Boinc-Electricity-Release-Notes.txt";
-        private protected string boincProgram = @"C:\Program Files\BOINC program\boincmgr";
+        static  private protected string mainDirectory = @"C:\BoincElectricity\";           //main directory for log and settings
+        static  private protected string logFile = "Boinc-Electricity-Log.txt";
+        static  private protected string settingsFile = "Boinc-Electricity-User-Settings.txt";
+        static  private protected string releaseNotesFile = "Boinc-Electricity-Release-Notes.txt";
+                private protected string boincProgram = @"C:\Program Files\BOINC program\boincmgr";
+
         static void Main()
         {
             //SETUP
@@ -92,11 +48,14 @@ namespace BoincElectricity
                     boinc.StartInfo.FileName = mainProgram.boincProgram;                    //program to be started file path
             //log
             logWriter.WriteLine($" {DateTime.Now} - ========================== NEW PROGRAM STARTUP ====================================\n" +
-                                $" {DateTime.Now} - Setting up program ressources: Directory, StreamWriter, API object, Process object.");
+                                $" {DateTime.Now} - Setting up program ressources: Directory, StreamWriter, API object, Process object.\n" +
+                                $" {DateTime.Now} - Reading settings file.");
             logWriter.Flush();
+            //read settings file and show its content on the sreen
+            ShowSettingsFile();
+            Thread.Sleep(2500);
             //read settings file for saved data - if tryparse fails e.g false, ask user to provide baseline price
-            mainProgram.savedPrice = decimal.TryParse(File.ReadAllText(mainDirectory + settingsFile).ToString(), 
-                                                      out decimal convertedResult);
+            mainProgram.savedPrice = decimal.TryParse(externalSettings[0], out decimal convertedResult);
             //ASK FOR USER INPUT
             if (!mainProgram.savedPrice)
             {
@@ -318,6 +277,26 @@ namespace BoincElectricity
             BufferWidth = 65;
             CursorVisible = false;                                                          //turn off cursor after reading settings file
         }
+        static void ShowSettingsFile()
+        {
+            WriteLine(" Previous settings:\n");
+            externalSettings = File.ReadAllLines(mainDirectory + settingsFile);
+            for (int i = 0; i < externalSettings.Length; i++)
+            {
+                string condition = Enum.GetName(typeof(Taxes), i);
+                WriteLine($" {Uppercase(condition)}: {externalSettings[i]}");    //THIS IS VERY FUCKED UP!
+            }
+        }
+        static string Uppercase(string s)
+        {
+            if (string.IsNullOrEmpty(s))
+            {
+                return string.Empty;
+            }
+            char[] a = s.ToCharArray();
+            a[0] = char.ToUpper(a[0]);
+            return new string(a);
+        }
         static void WritePriceText(string _time, decimal _price)
         {
             Clear();
@@ -344,6 +323,8 @@ namespace BoincElectricity
         {
             string releaseNotes =
                 " ! - bug\n ? - improvement\n * - update\n" +
+                " ======\n v1.5.0\n ______\n" +
+                " * - Added user input for local VAT and Excise which are saved to settings file." +
                 " ======\n v1.4.2\n ______\n" +
                 " ? - Code clean-up: 1) Removed one unnecessary parameter and its conversion.\n" +
                 "                    2) Removed double loging when BOINC was not running.\n" +

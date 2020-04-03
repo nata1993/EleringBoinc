@@ -19,6 +19,10 @@
       ? - improvement
       * - update
       ======
+      v1.5.0
+      ______
+      * - Added user input for local VAT and Excise which are saved to settings file.
+      ======
       v1.4.2
       ______
       ? - Code clean-up: 1) Removed one unnecessary parameter and its conversion.
