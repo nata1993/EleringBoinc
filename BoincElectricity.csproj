@@ -23,6 +23,8 @@
       ______
       * - Added user input for local VAT and Excise which are saved to settings file.
       * - User input is moved to class.
+      ? - Additional code refactorings.
+      * - Created setup class with setup settings for cleaner code.
       ======
       v1.4.2
       ______

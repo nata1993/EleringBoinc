@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.Text;
 using System.Threading;
 using static System.Console;
 
@@ -16,31 +15,25 @@ namespace BoincElectricity
     class Program
     {
         //parameters
-        static  private protected string[] externalSettings;
-                        protected int retryCounter = 1;                                     //counter for elering data aquisition
-                        protected int secondsTillOClock;
-                        protected bool savedPrice;
-                private protected string allRunningProcesses;
-                private protected bool mainLoop = true;
-        //file names and paths
-        static  private protected string mainDirectory = @"C:\BoincElectricity\";           //main directory for log and settings
-        static  private protected string logFile = "Boinc-Electricity-Log.txt";
-        static  private protected string releaseNotesFile = "Boinc-Electricity-Release-Notes.txt";
-                private protected string boincProgram = @"C:\Program Files\BOINC program\boincmgr";
+        private protected int retryCounter = 1;                                             //counter for elering data reaquisition
+        private protected bool savedPrice;
+        private protected string allRunningProcesses;
+        private protected bool mainLoop = true;
 
         static void Main()
         {
-            //SETUP
-            ProgramSetUp();
-            CreateDirectories();
             //objects and writers
-            StreamWriter logWriter = new StreamWriter(mainDirectory + logFile, true);       //StreamWritter is adding data to log file, not overwriting
-            Program mainProgram = new Program();                                            //Create object of main program
-            Elering elering = new Elering();                                                //create object for elering time and price data
-            UserInput userInput = new UserInput();
+            Setup setup = new Setup();                                                      //Setup is used for creating directories and other main program settings
+            StreamWriter logWriter = new StreamWriter(setup.LogFile, true);                 //StreamWritter is adding data to log file, not overwriting
+            Program mainProgram = new Program();                                            //mainProgram is used for global variables
+            Elering elering = new Elering();                                                //Elering is used for data aqcuisition from Elering API
+            UserInput userInput = new UserInput();                                          //UserInput is used for asking user to provide necessary data on start up
             Process boinc = new Process();                                                  //create process of external program to be run
                     boinc.StartInfo.UseShellExecute = false;                                //start only executables e.g.: .exe
-                    boinc.StartInfo.FileName = mainProgram.boincProgram;                    //program to be started file path
+                    boinc.StartInfo.FileName = setup.BoincProgram;                          //program to be started file path
+            //SETUP
+            setup.SetupConsoleWindow();
+            setup.CreateDirectoriesAndFiles();
             //log
             logWriter.WriteLine($" {DateTime.Now} - ========================== NEW PROGRAM STARTUP ====================================\n" +
                                 $" {DateTime.Now} - Setting up program ressources: Directory, StreamWriter, API object, Process object, etc.\n" +
@@ -61,16 +54,16 @@ namespace BoincElectricity
             else
             {
                 //read settings file and show its content on the sreen
-                ShowSettingsFile(userInput.SettingsFile);
+                setup.ShowSettingsFile(userInput.SettingsFile);
                 Thread.Sleep(2500);
                 //read settings file for saved data - if tryparse fails e.g false, ask user to provide baseline price
-                mainProgram.savedPrice = decimal.TryParse(externalSettings[0], out decimal convertedResult);
+                mainProgram.savedPrice = decimal.TryParse(setup.ExternalSettings[0], out decimal convertedResult);
                 WriteLine(" Using previously saved electricity price level.");
                 //log
                 logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
                                     $" {DateTime.Now} - Successfully read user saved setting from file.\n" +
                                     $" {DateTime.Now} - Using previously saved electricity price setting.");
-                userInput.UserProvidedElectricityPrice = convertedResult;                        //asign user provided setting from settings file
+                userInput.UserProvidedElectricityPrice = convertedResult;                   //asign user provided setting from settings file
                 Thread.Sleep(2000);                                                         //wait two seconds for user to read
             }
             logWriter.Flush();                                                              //flush all the log from user input to the log file
@@ -90,7 +83,7 @@ namespace BoincElectricity
                                             $" {DateTime.Now} - Requesting data from Elering.");
                         logWriter.Flush();                                                  //flush logs from Elering data request
                         elering.PublicGetApiData();                                         //getting data from elering
-                        mainProgram.secondsTillOClock = elering.CalculateRemainingSecondsTillOClock();
+                        elering.CalculateRemainingSecondsTillOClock();
                         break;
                     }
                     catch (WebException)
@@ -110,7 +103,7 @@ namespace BoincElectricity
                 WriteLine(" Checking for running boinc processes.\n");
                 //log
                 logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
-                                    $" {DateTime.Now} - Calculated seconds till next o'clock: {mainProgram.secondsTillOClock / 1000}.\n" +    //calculate milliseconds into seconds
+                                    $" {DateTime.Now} - Calculated seconds till next o'clock: {elering.SecondsTillOClock / 1000}.\n" +    //calculate milliseconds into seconds
                                     $" {DateTime.Now} - Requested data from Elering: {elering.TimeFromElering} : {elering.PriceFromElering}.\n" +
                                     $" {DateTime.Now} - Checking for running processes.");
                 logWriter.Flush();
@@ -137,26 +130,25 @@ namespace BoincElectricity
                     WritePriceText(elering.TimeFromElering, elering.PriceFromElering);      //Show aqcuired data from Elering
                     WriteLine(" Boinc is not crunching numbers.\n");
                     //START EXTERNAL PROCESS IF PRICE IS GOOD
-                    if (elering.PriceFromElering <= userInput.UserProvidedElectricityPrice)   //if price is below 45€/MWh and got data from elering, proceed to start process
+                    if (elering.PriceFromElering <= userInput.UserProvidedElectricityPrice) //if price is below 45€/MWh and got data from elering, proceed to start process
                     {
                         try
                         {
                             //log
-                            logWriter.WriteLine($" {DateTime.Now} - Started BOINC.");
+                            logWriter.WriteLine($" {DateTime.Now} - Starting BOINC.");
                             logWriter.Flush();
 
                             boinc.Start();                                                  //start process based on previous setup
                             Thread.Sleep(15000);                                            //wait 15 seconds for BOINC program to connect to internet and get data from internet
                             boinc.CloseMainWindow();                                        //close program window automatically to tray
-
-                            mainProgram.secondsTillOClock = elering.CalculateRemainingSecondsTillOClock();     //update remaining seconds till next o'clock
-
+                            elering.CalculateRemainingSecondsTillOClock();                  //update remaining seconds till next o'clock
                             WriteLine(" BOINC started crunching numbers!\n" +
                                       " Will check price again at next o'clock.");
                             //log
-                            logWriter.WriteLine($" {DateTime.Now} - Closed BOINC to tray.");
+                            logWriter.WriteLine($" {DateTime.Now} - Started BOINC program.\n" +
+                                                $" {DateTime.Now} - Closed BOINC to tray.");
                             logWriter.Flush();
-                            Thread.Sleep(mainProgram.secondsTillOClock);                    //stop process for one hour inorder to check electricity price again one hour later
+                            Thread.Sleep(elering.SecondsTillOClock);                        //stop main program process for one hour inorder to check electricity price again one hour later
                         }
                         catch (Exception e)
                         {
@@ -177,7 +169,7 @@ namespace BoincElectricity
                         //log
                         logWriter.WriteLine($"{DateTime.Now} - Requested data from Elering was above user specified level. BOINC was not started.");
                         logWriter.Flush();
-                        Thread.Sleep(mainProgram.secondsTillOClock);                        //stop process for one hour inorder to check electricity price again one hour later
+                        Thread.Sleep(elering.SecondsTillOClock);                            //stop main program process for one hour inorder to check electricity price again one hour later
                     }
                 }
                 //if BOINC is already running
@@ -194,7 +186,7 @@ namespace BoincElectricity
                                             $" {DateTime.Now} - BOINC process is running.\n" +
                                             $" {DateTime.Now} - Requested data from Elering was below user specified level. BOINC processes continued running.");
                         logWriter.Flush();
-                        Thread.Sleep(mainProgram.secondsTillOClock);                        //stop process for one hour inorder to check electricity price again one hour later
+                        Thread.Sleep(elering.SecondsTillOClock);                            //stop main program process for one hour inorder to check electricity price again one hour later
                     }
                     //IF PRICE IS BAD, TERMINATE BOINC
                     else
@@ -215,7 +207,7 @@ namespace BoincElectricity
                             //log
                             logWriter.WriteLine($" {DateTime.Now} - Killed brutaly BOINC processes.");
                             logWriter.Flush();
-                            Thread.Sleep(mainProgram.secondsTillOClock);                    //stop process for one hour inorder to check electricity price again one hour later
+                            Thread.Sleep(elering.SecondsTillOClock);                        //stop main program process for one hour inorder to check electricity price again one hour later
                         }
                         //if could not kill boinc processes, this exception is thrown and program is closing while error is written to log
                         catch (Exception e)
@@ -234,107 +226,13 @@ namespace BoincElectricity
             }
             ReadLine();
         }
-        static void ProgramSetUp()
-        {
-            //setup console window
-            OutputEncoding = Encoding.UTF8;
-            SetWindowSize(65, 15);
-            BufferWidth = 65;
-            CursorVisible = false;                                                          //turn off cursor after reading settings file
-        }
-        static void ShowSettingsFile(string path)
-        {
-            WriteLine(" Previous settings:\n");
-            externalSettings = File.ReadAllLines(path);
-            for (int i = 0; i < externalSettings.Length; i++)
-            {
-                string condition = Enum.GetName(typeof(Taxes), i);
-                WriteLine($" {Uppercase(condition)}: {externalSettings[i]}");
-            }
-        }
-        static string Uppercase(string s)
-        {
-            if (string.IsNullOrEmpty(s))
-            {
-                return string.Empty;
-            }
-            char[] c = s.ToCharArray();
-            c[0] = char.ToUpper(c[0]);
-            return new string(c);
-        }
-        static void WritePriceText(string _time, decimal _price)
+        static void WritePriceText(string time, decimal price)
         {
             Clear();
             WriteLine(" Requested data from Elering!\n" +
                       " Electricity price right now\n" +
                       " =========================\n " +
-                     $"{_time} : {_price} €/MWh\n");
-        }
-        static void CreateDirectories()
-        {
-            if (!Directory.Exists(mainDirectory))
-            {
-                Directory.CreateDirectory(mainDirectory);
-            }
-            if (!File.Exists(mainDirectory + releaseNotesFile))
-            {
-                File.Create(mainDirectory + releaseNotesFile).Close();
-                CreateReleaseNotes(mainDirectory + releaseNotesFile);
-            }
-        }
-        static void CreateReleaseNotes(string path)
-        {
-            string releaseNotes =
-                " ! - bug\n ? - improvement\n * - update\n" +
-                " ======\n v1.5.0\n ______\n" +
-                " * - Added user input for local VAT and Excise which are saved to settings file.\n" +
-                " * - User input is moved to class.\n" +
-                " ======\n v1.4.2\n ______\n" +
-                " ? - Code clean-up: 1) Removed one unnecessary parameter and its conversion.\n" +
-                "                    2) Removed double loging when BOINC was not running.\n" +
-                " ? - User can not provide zero or negative signed electricity price as baseline.\n" +
-                " ? - Changed when happens flushing of logs to log file.\n" + 
-                " ======\n v1.4.1\n ______\n" +
-                " ? - Console window size is now fixed to 65 width units and 15 height units.\n" +
-                " * - Program compiled with \"ReadyToRun\" function which according to Microsoft, improves program startup.\n" +
-                " ======\n v1.4.0\n ______\n" +
-                " ? - Complitely rewritten code for more structured code and easier reading.\n" +
-                " ======\n v1.3.2\n ______\n" +
-                " ! - Fixed bug where release notes file was not created.\n" +
-                " * - Main program is now object as well as main method parameters are hidden.\n" +
-                "   - Removed extra method for checking if user inputed decimal number with comma or dot and made such checking\n" +
-                "     easier in more suitable place as one liner code.\n" +
-                " ? - Rewritten code for easier maintainability and reading.\n" +
-                " ======\n v1.3.1\n ______\n" +
-                " ? - Updated code for easier maintainability.\n" +
-                " ======\n v1.3.0\n ______\n" +
-                " * - Created method for checking if user previously provided electricity price level.If not, ask\n" +
-                "     user to provide such data and save it to file for later use by program.\n" +
-                " ? - Rewritten code little bit for easier maintainability and testing aswell as bug tracking.\n" +
-                " ======\n v1.2.2\n ______\n" +
-                " ? - Minor improvements.\n" +
-                " ======\n v1.2.1\n ______\n" +
-                " ! - Fixed bug where program crashed when o'clock happened and program asked from Elering electricity\n" +
-                "     price but was unable to acquire data.Implemented 10 seconds buffer time for such occurence.\n" +
-                " ======\n v1.2.0\n ______\n" +
-                " ! - Fixed Elering data setters bug where Elering data could be modified in the main program method.\n" +
-                " * - Added method for calculating remaining seconds till next o'clock with additional 5 seconds for \n" +
-                "     confirmed data acquisition from Elering.\n" +
-                " ? - Rewritten code for easier reading of program text and log text.\n" +
-                " ======\n v1.1.1\n ______\n" +
-                " ? - Moved method of user input for electricity price level for asking only once when program starts.\n" +
-                " ======\n v1.1.0\n ______\n" +
-                " * - Added mechanism for writing working and error log of program.\n" +
-                " ======\n v1.0.3\n ______\n" +
-                " * - Added method that distinguishes between user inputed value whenever it is written with comma or dot.\n" +
-                "     Method also replaces input with dot to input with comma.\n" +
-                " ======\n v1.0.2\n ______\n" +
-                " * - Added method for user to provide electricity price level from which program will turn BOINC on or off.\n" +
-                " ======\n v1.0.1\n ______\n" +
-                " ? - Minor language mistakes corrected.\n" +
-                " ======\n v1.0.0\n ______\n" +
-                " * - Initial release or Console Application.\n";
-            File.WriteAllText(path, releaseNotes);
+                     $"{time} : {price} €/MWh\n");
         }
     }
 }

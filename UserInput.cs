@@ -13,9 +13,13 @@ namespace BoincElectricity
 {
     class UserInput
     {
+        private protected string priceTypeInput;                                            //parameter for checking if provided prices are either fixed prices or percent
         private protected decimal userProvidedElectricityPrice;                             //user provided maximum electricity price he/she wants to run boinc at
+        private protected bool electricityPriceType;
         private protected decimal userProvidedExcise;                                       //user provided excise in percent or fixed price
+        private protected bool excisePriceType;
         private protected decimal userProvidedVAT;                                          //user provided VAT in percent or fixed price
+        private protected bool VATType;
         private protected string settingsFile = @"C:\BoincElectricity\Boinc-Electricity-User-Settings.txt";
         private protected List<string> combinedPrices;
 
@@ -60,6 +64,36 @@ namespace BoincElectricity
                 }
             }
             logWriter.Flush();
+            while(true)
+            {
+                try
+                {
+                    WriteLine(" Is it fixed price or percent? Y/N");
+                    priceTypeInput = ReadLine();
+                    if (priceTypeInput.ToLower() == "y")
+                    {
+                        electricityPriceType = true;
+                        logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
+                                            $" {DateTime.Now} - User provided electricity price is in percent.");
+                        break;
+                    }
+                    else if (priceTypeInput.ToLower() == "n")
+                    {
+                        logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
+                                            $" {DateTime.Now} - User provided electricity price is fixed price.");
+                        break;
+                    }
+                    else if (priceTypeInput.ToLower() != "y" || priceTypeInput.ToLower() == string.Empty)
+                    {
+                        throw new FormatException("Input is not Y or N");
+                    }
+                }
+                catch(FormatException)
+                {
+                    WriteLine(" Please enter Y or N.");
+                }
+            }
+            logWriter.Flush();
         }
         public void AskExcise(StreamWriter logWriter)
         {
@@ -67,6 +101,7 @@ namespace BoincElectricity
             {
                 try
                 {
+                    Clear();
                     Write(" Please provide Excise price for calculating total electricity\n price in your region: ");
                     userProvidedExcise = decimal.Parse(ReadLine().Replace(".", ","));
                     if (userProvidedExcise <= 0)
@@ -99,6 +134,36 @@ namespace BoincElectricity
                 }
             }
             logWriter.Flush();
+            while (true)
+            {
+                try
+                {
+                    WriteLine(" Is it fixed price or percent? Y/N");
+                    priceTypeInput = ReadLine();
+                    if (priceTypeInput.ToLower() == "y")
+                    {
+                        electricityPriceType = true;
+                        logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
+                                            $" {DateTime.Now} - User provided excise price is in percent.");
+                        break;
+                    }
+                    else if (priceTypeInput.ToLower() == "n")
+                    {
+                        logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
+                                            $" {DateTime.Now} - User provided excise price is fixed price.");
+                        break;
+                    }
+                    else if (priceTypeInput.ToLower() != "y" || priceTypeInput.ToLower() == string.Empty)
+                    {
+                        throw new FormatException("Input is not Y or N");
+                    }
+                }
+                catch (FormatException)
+                {
+                    WriteLine(" Please enter Y or N.");
+                }
+            }
+            logWriter.Flush();
         }
         public void AskVAT(StreamWriter logWriter)
         {
@@ -106,6 +171,7 @@ namespace BoincElectricity
             {
                 try
                 {
+                    Clear();
                     Write(" Please provide VAT price for calculating total electricity\n price in your region: ");
                     userProvidedVAT = decimal.Parse(ReadLine().Replace(".", ","));
                     if (userProvidedVAT <= 0)
@@ -135,6 +201,36 @@ namespace BoincElectricity
                     //log
                     logWriter.WriteLine($" {DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
                                         $" {DateTime.Now} - User provided zero or negative VAT percent or price.");
+                }
+            }
+            logWriter.Flush();
+            while (true)
+            {
+                try
+                {
+                    WriteLine(" Is it fixed price or percent? Y/N");
+                    priceTypeInput = ReadLine();
+                    if (priceTypeInput.ToLower() == "y")
+                    {
+                        electricityPriceType = true;
+                        logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
+                                            $" {DateTime.Now} - User provided VAT is in percent.");
+                        break;
+                    }
+                    else if (priceTypeInput.ToLower() == "n")
+                    {
+                        logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
+                                            $" {DateTime.Now} - User provided VAT is fixed price.");
+                        break;
+                    }
+                    else if (priceTypeInput.ToLower() != "y" || priceTypeInput.ToLower() == string.Empty)
+                    {
+                        throw new FormatException("Input is not Y or N");
+                    }
+                }
+                catch (FormatException)
+                {
+                    WriteLine(" Please enter Y or N.");
                 }
             }
             logWriter.Flush();

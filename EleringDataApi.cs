@@ -9,6 +9,7 @@
 
 namespace BoincElectricity
 {
+    //EleringDataAPI class represents Elering API hierarchy
     class EleringDataApi
     {
         public class Ee

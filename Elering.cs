@@ -10,17 +10,21 @@ using System.Net;
 
 namespace BoincElectricity
 {
+    //Elering class is used for acquiring data from Elering and data reacquisition timing
     class Elering
     {
         private protected readonly string eleringApiLink = "https://dashboard.elering.ee/api/nps/price";
         private protected string timeFromElering;       //time from elering converted to human readable date and time
         private protected decimal priceFromElering;     //price from elering without taxes
         private protected int timestampFromElering;     //timestamp from elering
+        private protected int secondsTillOClock;
 
         //get used for class external data asking
         string EleringApiLink { get { return eleringApiLink; } }
         public string TimeFromElering { get { return timeFromElering; }  }
         public decimal PriceFromElering { get { return priceFromElering; }  }
+        public int SecondsTillOClock { get { return secondsTillOClock; } }
+
         private string FormatDateandTime(int timeStamp)
         {
             DateTime date = new DateTime(1970, 1, 1, 0, 0, 0).AddSeconds(timeStamp).ToLocalTime();
@@ -47,16 +51,16 @@ namespace BoincElectricity
             GetApiData();
         }
         //Calculate how many seconds remain till next o'clock
-        private int RemainingSecondsTillNextHour()
+        private void RemainingSecondsTillNextHour()
         {
             DateTime nextDtElering = new DateTime(1970, 1, 1, 0, 0, 0).AddHours(1).AddSeconds(timestampFromElering).ToLocalTime();  //create time from elering timestamp + 1 hour (next hour)
             DateTime dtNow = DateTime.Now;  //create time at the moment
             TimeSpan result = nextDtElering.Subtract(dtNow); //substract time at the moment from next hour elering timestamp
-            return Convert.ToInt32((result.TotalSeconds * 1000) + 10000); //convert substraction result to timestamp in millisecondsand and add 10 000 milliseconds (10 seconds)
+            secondsTillOClock = Convert.ToInt32((result.TotalSeconds * 1000) + 10000); //convert substraction result to timestamp in millisecondsand and add 10 000 milliseconds (10 seconds)
         }
-        public int CalculateRemainingSecondsTillOClock()
+        public void CalculateRemainingSecondsTillOClock()
         {
-            return RemainingSecondsTillNextHour();
+            RemainingSecondsTillNextHour();
         }
     }
 }
