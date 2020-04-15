@@ -138,7 +138,7 @@ namespace BoincElectricity
                             logWriter.WriteLine($" {DateTime.Now} - Starting BOINC.");
                             logWriter.Flush();
 
-                            boinc.Start();                                                  //start process based on previous setup
+                            boinc.Start();                                                  //start BOINC process based on previous setup but only if program is installed on PC
                             Thread.Sleep(15000);                                            //wait 15 seconds for BOINC program to connect to internet and get data from internet
                             boinc.CloseMainWindow();                                        //close program window automatically to tray
                             elering.CalculateRemainingSecondsTillOClock();                  //update remaining seconds till next o'clock
