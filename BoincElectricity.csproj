@@ -5,7 +5,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
     <PublishSingleFile>true</PublishSingleFile>
-    <Version>1.4.2</Version>
+    <Version>1.5.0</Version>
     <Authors>Bogdan Parubok</Authors>
     <Company />
     <Product>Boinc Electricity Price Follower</Product>
@@ -22,6 +22,7 @@
       v1.5.0
       ______
       * - Added user input for local VAT and Excise which are saved to settings file.
+      * - User input is moved to class.
       ======
       v1.4.2
       ______

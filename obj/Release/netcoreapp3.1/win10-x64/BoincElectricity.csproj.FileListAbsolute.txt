@@ -230,8 +230,8 @@ C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Release\netcore
 C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Release\netcoreapp3.1\win10-x64\hostfxr.dll
 C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Release\netcoreapp3.1\win10-x64\hostpolicy.dll
 C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Release\netcoreapp3.1\win10-x64\mscordaccore.dll
-C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Release\netcoreapp3.1\win10-x64\mscordaccore_amd64_amd64_4.700.20.6602.dll
 C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Release\netcoreapp3.1\win10-x64\mscordbi.dll
 C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Release\netcoreapp3.1\win10-x64\mscorrc.debug.dll
 C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Release\netcoreapp3.1\win10-x64\mscorrc.dll
 C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Release\netcoreapp3.1\win10-x64\ucrtbase.dll
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Release\netcoreapp3.1\win10-x64\mscordaccore_amd64_amd64_4.700.20.11803.dll
