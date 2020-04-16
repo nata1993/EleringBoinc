@@ -5,7 +5,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
     <PublishSingleFile>true</PublishSingleFile>
-    <Version>1.5.0</Version>
+    <Version>1.5.1</Version>
     <Authors>Bogdan Parubok</Authors>
     <Company />
     <Product>Boinc Electricity Price Follower</Product>
@@ -18,6 +18,11 @@
       ! - bug
       ? - improvement
       * - update
+      ======
+      v1.5.1
+      ______
+      ? - Small code cleanup and UI polishing.
+      * - Added Read Me file and text with description about BoincElectricity program.
       ======
       v1.5.0
       ______

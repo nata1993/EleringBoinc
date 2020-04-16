@@ -19,6 +19,7 @@ namespace BoincElectricity
         private protected bool savedPrice;
         private protected string allRunningProcesses;
         private protected bool mainLoop = true;
+        private protected decimal totalRunningCost;
 
         static void Main()
         {
@@ -45,8 +46,8 @@ namespace BoincElectricity
             {
                 CursorVisible = true;
                 userInput.AskElectricityPrice(logWriter);
-                userInput.AskExcise(logWriter);
                 userInput.AskVAT(logWriter);
+                userInput.AskExcise(logWriter);
                 userInput.SaveInputToSettingsFile();
                 userInput.ShowUserProvidedData();
                 CursorVisible = false;                                                      //turn off cursor after user inputed electricity price
@@ -134,6 +135,7 @@ namespace BoincElectricity
                     {
                         try
                         {
+                            //CombineHourlyPrice(elering.PriceFromElering, setup.ExternalSettings[1], setup.ExternalSettings[2], mainProgram.totalRunningCost);     NOT YET WORKING
                             //log
                             logWriter.WriteLine($" {DateTime.Now} - Starting BOINC.");
                             logWriter.Flush();
@@ -233,6 +235,27 @@ namespace BoincElectricity
                       " Electricity price right now\n" +
                       " =========================\n " +
                      $"{time} : {price} €/MWh\n");
+        }
+        static void CombineHourlyPrice(decimal hourlyPrice, string vat, string excise, decimal totalCost)
+        {
+            switch (UserInput.VATtype)
+            {
+                case false:     //fixed price
+                    totalCost += Convert.ToDecimal(vat);
+                    break;
+                case true:      //percent price
+                    totalCost += hourlyPrice * (Convert.ToDecimal(vat) / 100);
+                    break;
+            }
+            switch (UserInput.ExcisePriceType)
+            {
+                case false:     //fixed price
+                    totalCost += Convert.ToDecimal(excise);
+                    break;
+                case true:      //percent price
+                    totalCost += hourlyPrice * (Convert.ToDecimal(excise) / 100);
+                    break;
+            }
         }
     }
 }
