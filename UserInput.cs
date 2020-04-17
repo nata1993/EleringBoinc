@@ -14,14 +14,14 @@ namespace BoincElectricity
     class UserInput
     {
         private protected string priceTypeInput;                                            //parameter for checking if provided prices are either fixed prices or percent
-        private protected decimal userProvidedElectricityPrice;                             //user provided maximum electricity price he/she wants to run boinc at
-        private protected decimal userProvidedExcise;                                       //user provided excise in percent or fixed price
+        private protected double userProvidedElectricityPrice;                             //user provided maximum electricity price he/she wants to run boinc at
+        private protected double userProvidedExcise;                                       //user provided excise in percent or fixed price
         private protected static bool excisePriceType = false;                              //If false, then its fixed type price, if true, it is percent type price
-        private protected decimal userProvidedVAT;                                          //user provided VAT in percent or fixed price
+        private protected double userProvidedVAT;                                          //user provided VAT in percent or fixed price
         private protected static bool vatType = false;                                      //If false, then its fixed type price, if true, it is percent type price
         private protected List<string> collectedPrices;
 
-        public decimal UserProvidedElectricityPrice { get { return userProvidedElectricityPrice; }  set { userProvidedElectricityPrice = value; } }
+        public double UserProvidedElectricityPrice { get { return userProvidedElectricityPrice; }  set { userProvidedElectricityPrice = value; } }
         public static bool ExcisePriceType { get { return excisePriceType; } }
         public static bool VATtype { get { return excisePriceType; } }
 
@@ -32,7 +32,7 @@ namespace BoincElectricity
                 try
                 {
                     Write(" Please provide baseline electricity price you want to run\n program in megawatts per hour pricing (e.g 45 as in 45€/MWh): ");
-                    userProvidedElectricityPrice = decimal.Parse(ReadLine().Replace(".", ","));
+                    userProvidedElectricityPrice = double.Parse(ReadLine().Replace(".", ","));
                     if (userProvidedElectricityPrice <= 0)
                     {
                         throw new ArgumentException("Zero or negative number user input!");
@@ -72,7 +72,7 @@ namespace BoincElectricity
                 try
                 {
                     Write(" Please provide VAT price for calculating total electricity\n price in your region: ");
-                    userProvidedVAT = decimal.Parse(ReadLine().Replace(".", ","));
+                    userProvidedVAT = double.Parse(ReadLine().Replace(".", ","));
                     if (userProvidedVAT <= 0)
                     {
                         throw new ArgumentException("Zero or negative number user input!");
@@ -113,7 +113,7 @@ namespace BoincElectricity
                 try
                 {
                     Write(" Please provide Excise price for calculating total electricity\n price in your region: ");
-                    userProvidedExcise = decimal.Parse(ReadLine().Replace(".", ","));
+                    userProvidedExcise = double.Parse(ReadLine().Replace(".", ","));
                     if (userProvidedExcise <= 0)
                     {
                         throw new ArgumentException("Zero or negative number user input!");
@@ -191,7 +191,6 @@ namespace BoincElectricity
                 i++;
             }
             CursorLeft = 1;
-            Task.Delay(5000);
         }
         public void SaveInputToSettingsFile()
         {

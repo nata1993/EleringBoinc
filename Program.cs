@@ -52,6 +52,7 @@ namespace BoincElectricity
                 logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
                                      "                  Asked for user input and saved user input to\n" +
                                      "                  settings file.");
+                Task.Delay(5000).Wait();
             }
             else
             {
@@ -59,9 +60,9 @@ namespace BoincElectricity
                 {
                     //read settings file and show its content on the sreen
                     setup.ShowSettingsFile();
-                    Task.Delay(2500);
+                    Task.Delay(2500).Wait();
                     //read settings file for saved data - if tryparse fails e.g false e.g exception created e.g settings file is corrupted, ask user to provide baseline price
-                    mainProgram.savedPrice = decimal.TryParse(setup.ExternalSettings[0], out decimal convertedResult);
+                    mainProgram.savedPrice = double.TryParse(setup.ExternalSettings[0], out double convertedResult);
                     WriteLine(" Using previously saved electricity price limit.");
                     //log
                     logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
@@ -83,7 +84,7 @@ namespace BoincElectricity
                                          "                  Unsuccessfully read settings file.\n" +
                                          "                  Asked for user input.");
                 }
-                Task.Delay(2000);                                                         //wait two seconds for user to read
+                Task.Delay(2000).Wait();                                                         //wait two seconds for user to read
             }
             logWriter.Flush();                                                              //flush all the log from user input to the log file
             //LOOP FOR BOINCELECTRICITY PROGRAM
@@ -114,7 +115,7 @@ namespace BoincElectricity
                                              "                  Program could not get data from Elering.");
                         logWriter.Flush();                                                  //flush logs from Elering data request
                         mainProgram.retryCounter++;
-                        Task.Delay(5000);                                                   //retry every five seconds
+                        Task.Delay(5000).Wait();                                                   //retry every five seconds
                     }
                 }
                 //CHECK FOR RUNNING PROCESSES
@@ -130,7 +131,7 @@ namespace BoincElectricity
                 {
                     Process[] processList = Process.GetProcessesByName("BOINC");            //Search for running processes by name
                     mainProgram.allRunningProcesses = processList[0].ToString();            //convert acquired process into string for later use
-                    Task.Delay(2000);                                                     //wait for two seconds for user to read
+                    Task.Delay(2000).Wait();                                                     //wait for two seconds for user to read
                 }
                 catch (IndexOutOfRangeException)
                 {
@@ -158,7 +159,7 @@ namespace BoincElectricity
                             logWriter.WriteLine($" {DateTime.Now} - Starting BOINC.");
                             logWriter.Flush();
                             boinc.Start();                                                  //start BOINC process based on previous setup but only if program is installed on PC
-                            Task.Delay(15000);                                            //wait 15 seconds for BOINC program to connect to internet and get data from internet
+                            Task.Delay(15000).Wait();                                            //wait 15 seconds for BOINC program to connect to internet and get data from internet
                             boinc.CloseMainWindow();                                        //close program main window automatically to tray window
                             elering.CalculateRemainingSecondsTillNextHour();                //update remaining seconds till next o'clock
                             WriteLine(" BOINC started crunching numbers!\n" +
@@ -167,7 +168,7 @@ namespace BoincElectricity
                             logWriter.WriteLine($" {DateTime.Now} - Started BOINC program.\n" +
                                                  "                  Closed BOINC to tray.");
                             logWriter.Flush();
-                            Task.Delay(elering.SecondsTillOClock);                        //stop main program process for one hour inorder to check electricity price again one hour later
+                            Task.Delay(elering.SecondsTillOClock).Wait();                        //stop main program process for one hour inorder to check electricity price again one hour later
                         }
                         catch (Exception e)
                         {
@@ -188,7 +189,7 @@ namespace BoincElectricity
                         //log
                         logWriter.WriteLine($"{DateTime.Now} - Requested data from Elering was above user specified level. BOINC was not started.");
                         logWriter.Flush();
-                        Task.Delay(elering.SecondsTillOClock);                            //stop main program process for one hour inorder to check electricity price again one hour later
+                        Task.Delay(elering.SecondsTillOClock).Wait();                            //stop main program process for one hour inorder to check electricity price again one hour later
                     }
                 }
                 //if BOINC is already running
@@ -205,7 +206,7 @@ namespace BoincElectricity
                                              "                  BOINC process is running.\n" +
                                              "                  Requested data from Elering was below user specified level. BOINC processes continued running.");
                         logWriter.Flush();
-                        Task.Delay(elering.SecondsTillOClock);                            //stop main program process for one hour inorder to check electricity price again one hour later
+                        Task.Delay(elering.SecondsTillOClock).Wait();                            //stop main program process for one hour inorder to check electricity price again one hour later
                     }
                     //IF PRICE IS BAD, TERMINATE BOINC
                     else
@@ -226,7 +227,7 @@ namespace BoincElectricity
                             //log
                             logWriter.WriteLine($" {DateTime.Now} - Killed brutaly BOINC processes.");
                             logWriter.Flush();
-                            Task.Delay(elering.SecondsTillOClock);                        //stop main program process for one hour inorder to check electricity price again one hour later
+                            Task.Delay(elering.SecondsTillOClock).Wait();                        //stop main program process for one hour inorder to check electricity price again one hour later
                         }
                         //if could not kill boinc processes, this exception is thrown and program is closing while error is written to log
                         catch (Exception e)
@@ -238,14 +239,14 @@ namespace BoincElectricity
                                                  "                  Error in closing BOINC processes.\n" +
                                                 $" {DateTime.Now} - {e}");
                             logWriter.Flush();
-                            Task.Delay(15000);
+                            Task.Delay(15000).Wait();
                         }
                     }
                 }
             }
             ReadLine();
         }
-        static void PrintCurrentPrice(string time, decimal price)
+        static void PrintCurrentPrice(string time, double price)
         {
             Clear();
             WriteLine(" Requested data from Elering!\n" +

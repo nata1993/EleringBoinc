@@ -15,14 +15,14 @@ namespace BoincElectricity
     {
         private protected readonly string eleringApiLink = "https://dashboard.elering.ee/api/nps/price";
         private protected string timeFromElering;       //time from elering converted to human readable date and time
-        private protected decimal priceFromElering;     //price from elering without taxes
+        private protected double priceFromElering;     //price from elering without taxes
         private protected int timestampFromElering;     //timestamp from elering
         private protected int secondsTillOClock;
 
         //get used for class external data asking
         string EleringApiLink { get { return eleringApiLink; } }
         public string TimeFromElering { get { return timeFromElering; }  }
-        public decimal PriceFromElering { get { return priceFromElering; }  }
+        public double PriceFromElering { get { return priceFromElering; }  }
         public int SecondsTillOClock { get { return secondsTillOClock; } }
 
         private string FormatDateandTime(int timeStamp)
@@ -44,7 +44,7 @@ namespace BoincElectricity
             //add data to object
             timestampFromElering = elering.Data.Ee[^1].Timestamp;
             timeFromElering = FormatDateandTime(timestampFromElering);
-            priceFromElering = Convert.ToDecimal(elering.Data.Ee[^1].Price);
+            priceFromElering = elering.Data.Ee[^1].Price;
         }
         //Calculate how many seconds remain till next o'clock
         public  void CalculateRemainingSecondsTillNextHour()
