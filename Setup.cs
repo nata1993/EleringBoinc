@@ -19,10 +19,12 @@ namespace BoincElectricity
         private protected string releaseNotesFile = @"C:\BoincElectricity\Boinc-Electricity-Release-Notes.txt";
         private protected string readMe = @"C:\BoincElectricity\Boinc-Electricity-Read-Me.txt";
         private protected string boincProgram = @"C:\Program Files\BOINC program\boincmgr";
+        private protected string settingsFile = @"C:\BoincElectricity\Boinc-Electricity-User-Settings.txt";
         private protected string[] externalSettings;
 
         public string LogFile { get { return logFile; } }
         public string BoincProgram { get { return boincProgram; } }
+        public string SettingsFile { get { return settingsFile; } }
         public string[] ExternalSettings { get { return externalSettings; } }
 
         public void SetupConsoleWindow()
@@ -37,10 +39,10 @@ namespace BoincElectricity
             BufferWidth = 66;
             CursorVisible = false;
         }
-        public void ShowSettingsFile(string path)
+        public void ShowSettingsFile()
         {
             WriteLine(" Previous settings:\n");
-            externalSettings = File.ReadAllLines(path);
+            externalSettings = File.ReadAllLines(settingsFile);
             for (int i = 0; i < externalSettings.Length; i++)
             {
                 string condition = Enum.GetName(typeof(Taxes), i);
@@ -63,12 +65,8 @@ namespace BoincElectricity
             {
                 Directory.CreateDirectory(mainPath);
             }
-            if (!File.Exists(releaseNotesFile))
-            {
-                File.Create(releaseNotesFile).Close();
-                CreateReleaseNotes(releaseNotesFile);
-                CreateProgramIntro(readMe);
-            }
+            CreateReleaseNotes(releaseNotesFile);
+            CreateProgramIntro(readMe);
         }
         private void CreateProgramIntro(string path)
         {
@@ -126,12 +124,15 @@ namespace BoincElectricity
             string releaseNotes =
                 " ! - bug\n ? - improvement\n * - update\n" +
                 " ======\n v1.5.1\n ______\n" +
-                " ? - Small code cleanup and UI polishing.\n" +
+                " ! - Fixed bug where release notes and read me file would not be updated after new program release.\n" +
+                " ? - Small code cleanup and UI polishing. Content of release notes method is now structured according to\n" +
+                "     changes classificators.\n" +
                 " * - Added Read Me file and text with description about BoincElectricity program.\n" +
+                " * - Moved away from blocking timers to non-blocking timers e.g Thread.Sleep is now Task.Delay.\n" +
                 " ======\n v1.5.0\n ______\n" +
+                " ? - Additional code refactorings.\n" +
                 " * - Added user input for local VAT and Excise which are saved to settings file.\n" +
                 " * - User input is moved to class.\n" +
-                " ? - Additional code refactorings.\n" +
                 " * - Created setup class with setup settings for cleaner code.\n" +
                 " ======\n v1.4.2\n ______\n" +
                 " ? - Code clean-up: 1) Removed one unnecessary parameter and its conversion.\n" +
@@ -145,26 +146,26 @@ namespace BoincElectricity
                 " ? - Complitely rewritten code for more structured code and easier reading.\n" +
                 " ======\n v1.3.2\n ______\n" +
                 " ! - Fixed bug where release notes file was not created.\n" +
-                " * - Main program is now object as well as main method parameters are hidden.\n" +
-                "   - Removed extra method for checking if user inputed decimal number with comma or dot and made such checking\n" +
+                " ? - Removed extra method for checking if user inputed decimal number with comma or dot and made such checking\n" +
                 "     easier in more suitable place as one liner code.\n" +
                 " ? - Rewritten code for easier maintainability and reading.\n" +
+                " * - Main program is now object as well as main method parameters are hidden.\n" +
                 " ======\n v1.3.1\n ______\n" +
                 " ? - Updated code for easier maintainability.\n" +
                 " ======\n v1.3.0\n ______\n" +
+                " ? - Rewritten code little bit for easier maintainability and testing aswell as bug tracking.\n" +
                 " * - Created method for checking if user previously provided electricity price level.If not, ask\n" +
                 "     user to provide such data and save it to file for later use by program.\n" +
-                " ? - Rewritten code little bit for easier maintainability and testing aswell as bug tracking.\n" +
                 " ======\n v1.2.2\n ______\n" +
                 " ? - Minor improvements.\n" +
                 " ======\n v1.2.1\n ______\n" +
                 " ! - Fixed bug where program crashed when o'clock happened and program asked from Elering electricity\n" +
-                "     price but was unable to acquire data.Implemented 10 seconds buffer time for such occurence.\n" +
+                "     price but was unable to acquire data. Implemented 10 seconds buffer time for such occurence.\n" +
                 " ======\n v1.2.0\n ______\n" +
                 " ! - Fixed Elering data setters bug where Elering data could be modified in the main program method.\n" +
+                " ? - Rewritten code for easier reading of program text and log text.\n" +
                 " * - Added method for calculating remaining seconds till next o'clock with additional 5 seconds for \n" +
                 "     confirmed data acquisition from Elering.\n" +
-                " ? - Rewritten code for easier reading of program text and log text.\n" +
                 " ======\n v1.1.1\n ______\n" +
                 " ? - Moved method of user input for electricity price level for asking only once when program starts.\n" +
                 " ======\n v1.1.0\n ______\n" +

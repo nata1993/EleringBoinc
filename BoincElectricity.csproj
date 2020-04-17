@@ -21,14 +21,16 @@
       ======
       v1.5.1
       ______
+      ! - Fixed bug where release notes and read me file would not be updated after new program release.
       ? - Small code cleanup and UI polishing.
       * - Added Read Me file and text with description about BoincElectricity program.
+      * - Moved away from blocking timers to non-blocking timers e.g Thread.Sleep is now Task.Delay.
       ======
       v1.5.0
       ______
+      ? - Additional code refactorings.
       * - Added user input for local VAT and Excise which are saved to settings file.
       * - User input is moved to class.
-      ? - Additional code refactorings.
       * - Created setup class with setup settings for cleaner code.
       ======
       v1.4.2
@@ -50,10 +52,10 @@
       v1.3.2
       ______
       ! - Fixed bug where release notes file was not created.
+      ? - Rewritten code for easier maintainability and reading.
       * - Main program is now object as well as main method parameters are hidden.
         - Removed extra method for checking if user inputed decimal number with comma or dot and made such checking easier
           in more suitable place as one liner code.
-      ? - Rewritten code for easier maintainability and reading.
       ======
       v1.3.1
       ______
@@ -61,9 +63,9 @@
       ======
       v1.3.0
       ______
+      ? - Rewritten code little bit for easier maintainability and testing aswell as bug tracking.
       * - Created method for checking if user previously provided electricity price level. If not, ask
       user to provide such data and save it to file for later use by program.
-      ? - Rewritten code little bit for easier maintainability and testing aswell as bug tracking.
       ======
       v1.2.2
       ______
@@ -77,9 +79,9 @@
       v1.2.0
       ______
       ! - Fixed Elering data setters bug where Elering data could be modified in the main program method.
+      ? - Rewritten code for easier reading of program text and log text.
       * - Added method for calculating remaining seconds till next o'clock with additional 5 seconds for
       confirmed data acquisition from Elering.
-      ? - Rewritten code for easier reading of program text and log text.
       ======
       v1.1.1
       ______

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
+using System.Threading.Tasks;
 using static System.Console;
 
 //calculate spent electricity and its cost
@@ -16,15 +16,12 @@ namespace BoincElectricity
         private protected string priceTypeInput;                                            //parameter for checking if provided prices are either fixed prices or percent
         private protected decimal userProvidedElectricityPrice;                             //user provided maximum electricity price he/she wants to run boinc at
         private protected decimal userProvidedExcise;                                       //user provided excise in percent or fixed price
-        private protected static bool excisePriceType = false;                                     //If false, then its fixed type price, if true, it is percent type price
+        private protected static bool excisePriceType = false;                              //If false, then its fixed type price, if true, it is percent type price
         private protected decimal userProvidedVAT;                                          //user provided VAT in percent or fixed price
-        private protected static bool vatType = false;
-        private protected decimal totalElectricityPrice;                                    //Price that consists of electricity price, VAT and excise
-        private protected string settingsFile = @"C:\BoincElectricity\Boinc-Electricity-User-Settings.txt";
+        private protected static bool vatType = false;                                      //If false, then its fixed type price, if true, it is percent type price
         private protected List<string> collectedPrices;
 
         public decimal UserProvidedElectricityPrice { get { return userProvidedElectricityPrice; }  set { userProvidedElectricityPrice = value; } }
-        public string SettingsFile { get { return settingsFile; } }
         public static bool ExcisePriceType { get { return excisePriceType; } }
         public static bool VATtype { get { return excisePriceType; } }
 
@@ -42,9 +39,9 @@ namespace BoincElectricity
                     }
                     //log
                     logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
-                                        $" {DateTime.Now} - User provided electricity price: {userProvidedElectricityPrice}.\n" +
-                                        $" {DateTime.Now} - User provided numerical translation of electricity price: {userProvidedElectricityPrice}.\n" +
-                                        $" {DateTime.Now} - Saved user provided numerical translation of electricity price to settings file.");
+                                        $"                  User provided electricity price: {userProvidedElectricityPrice}.\n" +
+                                        $"                  User provided numerical translation of electricity price: {userProvidedElectricityPrice}.\n" +
+                                         "                  Saved user provided numerical translation of electricity price to settings file.");
                     break;
                 }
                 catch (FormatException)
@@ -53,8 +50,8 @@ namespace BoincElectricity
                     WriteLine(" Please insert valid number.");
                     //log
                     logWriter.WriteLine($" {DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
-                                        $" {DateTime.Now} - User provided baseline electricity price in incorrect format" +
-                                        $" {DateTime.Now} - or there was no input at all.");
+                                         "                  User provided baseline electricity price in incorrect format" +
+                                         "                  or there was no input at all.");
                 }
                 catch (ArgumentException)
                 {
@@ -62,7 +59,7 @@ namespace BoincElectricity
                     WriteLine(" You must provide number that is positive signed number e.g.\n not zero and not with minus sign.");
                     //log
                     logWriter.WriteLine($" {DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
-                                        $" {DateTime.Now} - User provided zero or negative electricity price.");
+                                         "                  User provided zero or negative electricity price.");
                 }
             }
             logWriter.Flush();
@@ -84,7 +81,7 @@ namespace BoincElectricity
                     logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
                                         $" {DateTime.Now} - User provided VAT price or percent: {userProvidedVAT}.\n" +
                                         $" {DateTime.Now} - User provided numerical translation of VAT: {userProvidedVAT}.\n" +
-                                        $" {DateTime.Now} - Saved user provided numerical translation of VAT to settings file.");
+                                         "                  Saved user provided numerical translation of VAT to settings file.");
                     break;
                 }
                 catch (FormatException)
@@ -93,8 +90,8 @@ namespace BoincElectricity
                     WriteLine(" Please insert valid number.");
                     //log
                     logWriter.WriteLine($" {DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
-                                        $" {DateTime.Now} - User provided VAT in incorrect format" +
-                                        $" {DateTime.Now} - or there was no input at all.");
+                                         "                  User provided VAT in incorrect format" +
+                                         "                  or there was no input at all.");
                 }
                 catch (ArgumentException)
                 {
@@ -102,7 +99,7 @@ namespace BoincElectricity
                     WriteLine(" You must provide number that is positive signed number e.g.\n not zero and not with minus sign.");
                     //log
                     logWriter.WriteLine($" {DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
-                                        $" {DateTime.Now} - User provided zero or negative VAT percent or price.");
+                                         "                  User provided zero or negative VAT percent or price.");
                 }
             }
             logWriter.Flush();
@@ -125,7 +122,7 @@ namespace BoincElectricity
                     logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
                                         $" {DateTime.Now} - User provided excise price or percent: {userProvidedExcise}.\n" +
                                         $" {DateTime.Now} - User provided numerical translation of excise: {userProvidedExcise}.\n" +
-                                        $" {DateTime.Now} - Saved user provided numerical translation of excise to settings file.");
+                                         "                  Saved user provided numerical translation of excise to settings file.");
                     break;
                 }
                 catch (FormatException)
@@ -134,8 +131,8 @@ namespace BoincElectricity
                     WriteLine(" Please insert valid number.");
                     //log
                     logWriter.WriteLine($" {DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
-                                        $" {DateTime.Now} - User provided excise in incorrect format" +
-                                        $" {DateTime.Now} - or there was no input at all.");
+                                         "                  User provided excise in incorrect format" +
+                                         "                  or there was no input at all.");
                 }
                 catch (ArgumentException)
                 {
@@ -143,7 +140,7 @@ namespace BoincElectricity
                     WriteLine(" You must provide number that is positive signed number e.g.\n not zero and not with minus sign.");
                     //log
                     logWriter.WriteLine($" {DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
-                                        $" {DateTime.Now} - User provided zero or negative excise percent or price.");
+                                         "                  User provided zero or negative excise percent or price.");
                 }
             }
             logWriter.Flush();
@@ -163,13 +160,13 @@ namespace BoincElectricity
                     {
                         inputType = true;
                         logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
-                                            $" {DateTime.Now} - User provided {userInput} price is in percent.");
+                                            $"                  User provided {userInput} price is in percent.");
                         break;
                     }
                     else if (priceTypeInput.ToLower() == "f")
                     {
                         logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
-                                            $" {DateTime.Now} - User provided {userInput} price is fixed price.");
+                                            $"                  User provided {userInput} price is fixed price.");
                         break;
                     }
                     else
@@ -194,15 +191,18 @@ namespace BoincElectricity
                 i++;
             }
             CursorLeft = 1;
-            Thread.Sleep(5000);
+            Task.Delay(5000);
         }
         public void SaveInputToSettingsFile()
         {
-            collectedPrices = new List<string>();
-            collectedPrices.Add(userProvidedElectricityPrice.ToString());
-            collectedPrices.Add(userProvidedExcise.ToString());
-            collectedPrices.Add(userProvidedVAT.ToString());
-            File.WriteAllLines(settingsFile, collectedPrices);
+            Setup setup = new Setup();
+            collectedPrices = new List<string>
+            {
+                userProvidedElectricityPrice.ToString(),
+                userProvidedExcise.ToString(),
+                userProvidedVAT.ToString()
+            };
+            File.WriteAllLines(setup.SettingsFile, collectedPrices);
         }
     }
 }

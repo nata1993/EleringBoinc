@@ -1,0 +1,6 @@
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\obj\Debug\netcoreapp3.1\win10-x64\BoincElectricity.csprojAssemblyReference.cache
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\obj\Debug\netcoreapp3.1\win10-x64\BoincElectricity.Properties.Resources.resources
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\obj\Debug\netcoreapp3.1\win10-x64\BoincElectricity.csproj.GenerateResource.cache
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\obj\Debug\netcoreapp3.1\win10-x64\BoincElectricity.csproj.CoreCompileInputs.cache
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\obj\Debug\netcoreapp3.1\win10-x64\BoincElectricity.AssemblyInfoInputs.cache
+C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\obj\Debug\netcoreapp3.1\win10-x64\BoincElectricity.AssemblyInfo.cs

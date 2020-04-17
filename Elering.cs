@@ -32,7 +32,7 @@ namespace BoincElectricity
             return formatedDate;
         }
         //Get data from elering
-        private void GetApiData()
+        public  void GetApiData()
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(EleringApiLink);
                            request.Method = "GET";
@@ -46,21 +46,13 @@ namespace BoincElectricity
             timeFromElering = FormatDateandTime(timestampFromElering);
             priceFromElering = Convert.ToDecimal(elering.Data.Ee[^1].Price);
         }
-        public void PublicGetApiData()
-        {
-            GetApiData();
-        }
         //Calculate how many seconds remain till next o'clock
-        private void RemainingSecondsTillNextHour()
+        public  void CalculateRemainingSecondsTillNextHour()
         {
-            DateTime nextDtElering = new DateTime(1970, 1, 1, 0, 0, 0).AddHours(1).AddSeconds(timestampFromElering).ToLocalTime();  //create time from elering timestamp + 1 hour (next hour)
-            DateTime dtNow = DateTime.Now;  //create time at the moment
-            TimeSpan result = nextDtElering.Subtract(dtNow); //substract time at the moment from next hour elering timestamp
-            secondsTillOClock = Convert.ToInt32((result.TotalSeconds * 1000) + 10000); //convert substraction result to timestamp in millisecondsand and add 10 000 milliseconds (10 seconds)
-        }
-        public void CalculateRemainingSecondsTillOClock()
-        {
-            RemainingSecondsTillNextHour();
+            DateTime dtNow = DateTime.Now;  //time at the moment
+            DateTime nextDtElering = new DateTime(1970, 1, 1, 0, 0, 0).AddHours(1).AddSeconds(timestampFromElering).ToLocalTime();  // time from elering timestamp + 1 hour (next hour)
+            TimeSpan result = nextDtElering.Subtract(dtNow); //substract current time from next hour elering timestamp
+            secondsTillOClock = Convert.ToInt32((result.TotalSeconds * 1000) + 10000); //convert substraction result to timestamp in milliseconds and and add 10 000 milliseconds (10 seconds)
         }
     }
 }
