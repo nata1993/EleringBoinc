@@ -5,7 +5,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
     <PublishSingleFile>true</PublishSingleFile>
-    <Version>1.5.2</Version>
+    <Version>1.6.0</Version>
     <Authors>Bogdan Parubok</Authors>
     <Company />
     <Product>Boinc Electricity Price Follower</Product>
@@ -19,10 +19,15 @@
       ? - improvement
       * - update
       ======
+      v1.6.0
+      ______
+      ? - Implemented method for checking if BOINC is installed on computer in original Program Files
+          folder. User can provide alternative filepath to BOINC program if BOINC is not found in
+          Program Files folder.
+      ======
       v1.5.2
       ______
-      ! - Fixed bug where Task.Delay was not working properly.
-      * - Added icon.
+      ! - Fixed bug where Task.Delay was not working properly.      * - Added icon.
       ======
       v1.5.1
       ______
@@ -115,7 +120,7 @@
     </PackageReleaseNotes>
     <RepositoryUrl>https://github.com/nata1993/EleringBoinc.git</RepositoryUrl>
     <NeutralLanguage>en-GB</NeutralLanguage>
-    <ApplicationIcon>electric_meter_512_TEx_icon.ico</ApplicationIcon>
+    <ApplicationIcon>electric_meter_512_icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

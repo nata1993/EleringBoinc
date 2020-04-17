@@ -15,16 +15,18 @@ namespace BoincElectricity
     {
         //file names and paths
         private protected string mainPath = @"C:\BoincElectricity\";
-        private protected string logFile = @"C:\BoincElectricity\Boinc-Electricity-Log.txt";
-        private protected string releaseNotesFile = @"C:\BoincElectricity\Boinc-Electricity-Release-Notes.txt";
-        private protected string readMe = @"C:\BoincElectricity\Boinc-Electricity-Read-Me.txt";
-        private protected string boincProgram = @"C:\Program Files\BOINC program\boincmgr";
-        private protected string settingsFile = @"C:\BoincElectricity\Boinc-Electricity-User-Settings.txt";
+        private protected string logFilePath = @"C:\BoincElectricity\Boinc-Electricity-Log.txt";
+        private protected string releaseNotesFilePath = @"C:\BoincElectricity\Boinc-Electricity-Release-Notes.txt";
+        private protected string readMeFIlePath = @"C:\BoincElectricity\Boinc-Electricity-Read-Me.txt";
+        private protected string settingsFilePath = @"C:\BoincElectricity\Boinc-Electricity-User-Settings.txt";
+        private protected string boincProgram = @"\boincmgr";
+        private protected string boincInstallationPath = @"C:\Program Files\BOINC program";
         private protected string[] externalSettings;
 
-        public string LogFile { get { return logFile; } }
+        public string LogFile { get { return logFilePath; } }
         public string BoincProgram { get { return boincProgram; } }
-        public string SettingsFile { get { return settingsFile; } }
+        public string SettingsFile { get { return settingsFilePath; } }
+        public string BoincInstallationPath { get { return boincInstallationPath; } }
         public string[] ExternalSettings { get { return externalSettings; } }
 
         public void SetupConsoleWindow()
@@ -42,11 +44,36 @@ namespace BoincElectricity
         public void ShowSettingsFile()
         {
             WriteLine(" Previous settings:\n");
-            externalSettings = File.ReadAllLines(settingsFile);
+            externalSettings = File.ReadAllLines(settingsFilePath);
             for (int i = 0; i < externalSettings.Length; i++)
             {
                 string condition = Enum.GetName(typeof(Taxes), i);
                 WriteLine($" {Uppercase(condition)}: {externalSettings[i]}");
+            }
+        }
+        public void CheckIfBoincIsInstalled()
+        {
+            if (!Directory.Exists(boincInstallationPath))
+            {
+                CursorVisible = true;
+                WriteLine(" Boinc program is not installed in Program Files directory.\n" +
+                          " Can not continue automation of process.\n\n" +
+                          " Please provide full destination path to BOINC program:");
+                while (true)
+                {
+                    CursorLeft = 1;
+                    boincInstallationPath = ReadLine();
+                    if (!Directory.Exists(boincInstallationPath))
+                    {
+                        Clear();
+                        WriteLine(" Newly provided directory does not exist!\n" +
+                                  " Please provide full destination path to BOINC program:");
+                    }
+                    else
+                        break;
+                }
+                CursorVisible = false;
+                Clear();
             }
         }
         private string Uppercase(string s)
@@ -65,8 +92,8 @@ namespace BoincElectricity
             {
                 Directory.CreateDirectory(mainPath);
             }
-            CreateReleaseNotes(releaseNotesFile);
-            CreateProgramIntro(readMe);
+            CreateReleaseNotes(releaseNotesFilePath);
+            CreateProgramIntro(readMeFIlePath);
         }
         private void CreateProgramIntro(string path)
         {
@@ -123,6 +150,10 @@ namespace BoincElectricity
         {
             string releaseNotes =
                 " ! - bug\n ? - improvement\n * - update\n" +
+                " ======\n v1.6.0\n ______\n" +
+                " ? - Implemented method for checking if BOINC is installed on computer in original Program Files\n" +
+                "     folder.User can provide alternative filepath to BOINC program if BOINC is not found in\n" +
+                "     Program Files folder.\n" +
                 " ======\n v1.5.2\n ______\n" +
                 " ! - Fixed bug where Task.Delay was not working properly.\n" +
                 " * - Added icon.\n" +

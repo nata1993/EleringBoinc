@@ -5,7 +5,6 @@ using System.Net;
 using System.Threading.Tasks;
 using static System.Console;
 
-//check if BOINC is even installed on computer
 //optional: send data to database
 
 namespace BoincElectricity
@@ -27,11 +26,12 @@ namespace BoincElectricity
             Elering elering = new Elering();                                                //Elering is used for data aqcuisition from Elering API
             UserInput userInput = new UserInput();                                          //UserInput is used for asking user to provide necessary data on start up
             Process boinc = new Process();                                                  //create process of external program to be run
-                    boinc.StartInfo.UseShellExecute = false;                                //start only executables e.g.: .exe
-                    boinc.StartInfo.FileName = setup.BoincProgram;                          //file path for the program to be started
             //SETUP
             setup.SetupConsoleWindow();
             setup.CreateDirectoriesAndFiles();
+            setup.CheckIfBoincIsInstalled();
+            boinc.StartInfo.UseShellExecute = false;                                        //start only executables e.g.: .exe
+            boinc.StartInfo.FileName = setup.BoincInstallationPath + setup.BoincProgram;    //file path for the program to be started
             //log
             logWriter.WriteLine($" {DateTime.Now} - ========================== NEW PROGRAM STARTUP ====================================\n" +
                                  "                  Setting up program ressources: Directory, StreamWriter, API object, Process object, etc.\n" +
@@ -159,7 +159,7 @@ namespace BoincElectricity
                             logWriter.WriteLine($" {DateTime.Now} - Starting BOINC.");
                             logWriter.Flush();
                             boinc.Start();                                                  //start BOINC process based on previous setup but only if program is installed on PC
-                            Task.Delay(15000).Wait();                                            //wait 15 seconds for BOINC program to connect to internet and get data from internet
+                            Task.Delay(16000).Wait();                                            //wait 15 seconds for BOINC program to connect to internet and get data from internet
                             boinc.CloseMainWindow();                                        //close program main window automatically to tray window
                             elering.CalculateRemainingSecondsTillNextHour();                //update remaining seconds till next o'clock
                             WriteLine(" BOINC started crunching numbers!\n" +
