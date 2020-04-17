@@ -19,6 +19,10 @@
       ? - improvement
       * - update
       ======
+      v1.5.2
+      ______
+      * - Added icon.
+      ======
       v1.5.1
       ______
       ! - Fixed bug where release notes and read me file would not be updated after new program release.
@@ -110,6 +114,7 @@
     </PackageReleaseNotes>
     <RepositoryUrl>https://github.com/nata1993/EleringBoinc.git</RepositoryUrl>
     <NeutralLanguage>en-GB</NeutralLanguage>
+    <ApplicationIcon>electric_meter_512_TEx_icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

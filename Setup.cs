@@ -123,6 +123,8 @@ namespace BoincElectricity
         {
             string releaseNotes =
                 " ! - bug\n ? - improvement\n * - update\n" +
+                " ======\n v1.5.2\n ______\n" +
+                " * - Added icon.\n" +
                 " ======\n v1.5.1\n ______\n" +
                 " ! - Fixed bug where release notes and read me file would not be updated after new program release.\n" +
                 " ? - Small code cleanup and UI polishing. Content of release notes method is now structured according to\n" +
