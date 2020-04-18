@@ -66,7 +66,8 @@ namespace BoincElectricity
                     if (!Directory.Exists(boincInstallationPath))
                     {
                         Clear();
-                        WriteLine(" Newly provided directory does not exist!\n" +
+                        WriteLine(" Provided directory does not exist!\n" +
+                                  " Example: C:\\Program Files\\BOINC program\n" +
                                   " Please provide full destination path to BOINC program:");
                     }
                     else
@@ -150,6 +151,9 @@ namespace BoincElectricity
         {
             string releaseNotes =
                 " ! - bug\n ? - improvement\n * - update\n" +
+                " ======\n v1.6.1\n ______\n" +
+                " ? - Simplified BoincElectricity global variables and further cleaned up code.\n" +
+                " ? - Rewritten code for asking user input to consist of less \"code smell\" aka less copy paste code.\n" +
                 " ======\n v1.6.0\n ______\n" +
                 " ? - Implemented method for checking if BOINC is installed on computer in original Program Files\n" +
                 "     folder.User can provide alternative filepath to BOINC program if BOINC is not found in\n" +

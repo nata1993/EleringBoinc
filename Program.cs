@@ -9,20 +9,19 @@ using static System.Console;
 
 namespace BoincElectricity
 {
-    class Program
+    class BoincElectricity
     {
         //parameters
-        private protected int retryCounter;                                                 //counter for elering data reaquisition
-        private protected bool savedPrice;                                                  //parameter for reading external settings file, true if setting was previously saved
-        private protected string allRunningProcesses;                                       //parameter for all processes that are currently running
-        private protected bool mainLoop = true;                                             //parameter for turning program loop off if critical error
+        static private protected int retryCounter;                                                 //counter for elering data reaquisition
+        static private protected bool savedPrice;                                                  //parameter for reading external settings file, true if setting was previously saved
+        static private protected string allRunningProcesses;                                       //parameter for all processes that are currently running
+        static private protected bool programLoop = true;                                             //parameter for turning program loop off if critical error happened
 
         static void Main()
         {
             //objects and writers
             Setup setup = new Setup();                                                      //Setup is used for creating directories and other main program settings
             StreamWriter logWriter = new StreamWriter(setup.LogFile, true);                 //StreamWritter is adding data to log file, not overwriting
-            Program mainProgram = new Program();                                            //mainProgram is used for global variables
             Elering elering = new Elering();                                                //Elering is used for data aqcuisition from Elering API
             UserInput userInput = new UserInput();                                          //UserInput is used for asking user to provide necessary data on start up
             Process boinc = new Process();                                                  //create process of external program to be run
@@ -43,8 +42,8 @@ namespace BoincElectricity
             {
                 CursorVisible = true;
                 userInput.AskElectricityPrice(logWriter);
-                userInput.AskVAT(logWriter);
-                userInput.AskExcise(logWriter);
+                userInput.AskVAT(logWriter, "VAT");
+                userInput.AskExcise(logWriter, "Excise");
                 userInput.SaveInputToSettingsFile();
                 userInput.ShowUserProvidedData();
                 CursorVisible = false;                                                      //turn off cursor after user inputed electricity price
@@ -62,7 +61,7 @@ namespace BoincElectricity
                     setup.ShowSettingsFile();
                     Task.Delay(2500).Wait();
                     //read settings file for saved data - if tryparse fails e.g false e.g exception created e.g settings file is corrupted, ask user to provide baseline price
-                    mainProgram.savedPrice = double.TryParse(setup.ExternalSettings[0], out double convertedResult);
+                    savedPrice = double.TryParse(setup.ExternalSettings[0], out double convertedResult);
                     WriteLine(" Using previously saved electricity price limit.");
                     //log
                     logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
@@ -74,8 +73,8 @@ namespace BoincElectricity
                 {
                     CursorVisible = true;
                     userInput.AskElectricityPrice(logWriter);
-                    userInput.AskVAT(logWriter);
-                    userInput.AskExcise(logWriter);
+                    userInput.AskVAT(logWriter, "VAT");
+                    userInput.AskExcise(logWriter, "Excise");
                     userInput.SaveInputToSettingsFile();
                     userInput.ShowUserProvidedData();
                     CursorVisible = false;
@@ -88,16 +87,16 @@ namespace BoincElectricity
             }
             logWriter.Flush();                                                              //flush all the log from user input to the log file
             //LOOP FOR BOINCELECTRICITY PROGRAM
-            while (mainProgram.mainLoop)
+            while (programLoop)
             {
                 //REQUEST FOR ELECTRICITY DATA FROM ELERING
-                mainProgram.retryCounter = 1;
+                retryCounter = 1;
                 while (true)
                 {
                     try
                     {
                         Clear();
-                        WriteLine($" {mainProgram.retryCounter}) Requesting data from Elering\n" +
+                        WriteLine($" {retryCounter}) Requesting data from Elering\n" +
                                    " =========================\n");
                         //log
                         logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
@@ -114,7 +113,7 @@ namespace BoincElectricity
                         logWriter.WriteLine($" {DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
                                              "                  Program could not get data from Elering.");
                         logWriter.Flush();                                                  //flush logs from Elering data request
-                        mainProgram.retryCounter++;
+                        retryCounter++;
                         Task.Delay(5000).Wait();                                                   //retry every five seconds
                     }
                 }
@@ -130,12 +129,12 @@ namespace BoincElectricity
                 try
                 {
                     Process[] processList = Process.GetProcessesByName("BOINC");            //Search for running processes by name
-                    mainProgram.allRunningProcesses = processList[0].ToString();            //convert acquired process into string for later use
+                    allRunningProcesses = processList[0].ToString();            //convert acquired process into string for later use
                     Task.Delay(2000).Wait();                                                     //wait for two seconds for user to read
                 }
                 catch (IndexOutOfRangeException)
                 {
-                    mainProgram.allRunningProcesses = "-1";                                 //save index out of range for later use
+                    allRunningProcesses = "-1";                                 //save index out of range for later use
                     PrintCurrentPrice(elering.TimeFromElering, elering.PriceFromElering);      //Show aqcuired data from Elering
                     WriteLine(" Boinc is not crunching numbers.\n");
                     //log
@@ -145,7 +144,7 @@ namespace BoincElectricity
                 }
                 //CHECK FOR RUNNING EXTERNAL PROCESS
                 //if there is no process running, BOINC process is started
-                if (mainProgram.allRunningProcesses == "-1")
+                if (allRunningProcesses == "-1")
                 {
                     PrintCurrentPrice(elering.TimeFromElering, elering.PriceFromElering);   //Show aqcuired data from Elering
                     WriteLine(" Boinc is not crunching numbers.\n");
@@ -178,7 +177,7 @@ namespace BoincElectricity
                                                  "                  Could not start BOINC program for some reason.\n" +
                                                 $" {e}");
                             logWriter.Flush();
-                            mainProgram.mainLoop = false;                                   //upon critical error, stop main loop
+                            programLoop = false;                                   //upon critical error, stop main loop
                         }
                     }
                     //WAIT FOR GOOD PRICE TO START PROCESS
@@ -193,7 +192,7 @@ namespace BoincElectricity
                     }
                 }
                 //if BOINC is already running
-                else if (mainProgram.allRunningProcesses == "System.Diagnostics.Process (boinc)")
+                else if (allRunningProcesses == "System.Diagnostics.Process (boinc)")
                 {
                     //IF PRICE IS GOOD
                     if (elering.PriceFromElering <= userInput.UserProvidedElectricityPrice)

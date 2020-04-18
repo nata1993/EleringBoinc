@@ -65,86 +65,50 @@ namespace BoincElectricity
             logWriter.Flush();
             Clear();
         }
-        public void AskVAT(StreamWriter logWriter)
+        public void AskVAT(StreamWriter logWriter, string parameterToBeAsked)
         {
-            while (true)
-            {
-                try
-                {
-                    Write(" Please provide VAT price for calculating total electricity\n price in your region: ");
-                    userProvidedVAT = double.Parse(ReadLine().Replace(".", ","));
-                    if (userProvidedVAT <= 0)
-                    {
-                        throw new ArgumentException("Zero or negative number user input!");
-                    }
-                    //log
-                    logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
-                                        $" {DateTime.Now} - User provided VAT price or percent: {userProvidedVAT}.\n" +
-                                        $" {DateTime.Now} - User provided numerical translation of VAT: {userProvidedVAT}.\n" +
-                                         "                  Saved user provided numerical translation of VAT to settings file.");
-                    break;
-                }
-                catch (FormatException)
-                {
-                    Clear();
-                    WriteLine(" Please insert valid number.");
-                    //log
-                    logWriter.WriteLine($" {DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
-                                         "                  User provided VAT in incorrect format" +
-                                         "                  or there was no input at all.");
-                }
-                catch (ArgumentException)
-                {
-                    Clear();
-                    WriteLine(" You must provide number that is positive signed number e.g.\n not zero and not with minus sign.");
-                    //log
-                    logWriter.WriteLine($" {DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
-                                         "                  User provided zero or negative VAT percent or price.");
-                }
-            }
-            logWriter.Flush();
-            UserInputedPriceTypeCheck(logWriter, "VAT", ref vatType);
-            Clear();
+            AskingBlank(logWriter, ref userProvidedVAT, parameterToBeAsked);
         }
-        public void AskExcise(StreamWriter logWriter)
+        public void AskExcise(StreamWriter logWriter, string parameterToBeAsked)
+        {
+            AskingBlank(logWriter, ref userProvidedExcise, parameterToBeAsked);
+        }
+        private void AskingBlank(StreamWriter logWriter, ref double parameter, string _parameterToBeASked)
         {
             while (true)
             {
                 try
                 {
-                    Write(" Please provide Excise price for calculating total electricity\n price in your region: ");
-                    userProvidedExcise = double.Parse(ReadLine().Replace(".", ","));
-                    if (userProvidedExcise <= 0)
+                    Write($" Please provide {_parameterToBeASked} price for calculating total electricity\n price in your region: ");
+                    parameter = double.Parse(ReadLine().Replace(".", ","));
+                    if (parameter <= 0)
                     {
                         throw new ArgumentException("Zero or negative number user input!");
                     }
                     //log
                     logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
-                                        $" {DateTime.Now} - User provided excise price or percent: {userProvidedExcise}.\n" +
-                                        $" {DateTime.Now} - User provided numerical translation of excise: {userProvidedExcise}.\n" +
-                                         "                  Saved user provided numerical translation of excise to settings file.");
+                                        $" {DateTime.Now} - User provided {_parameterToBeASked} price or percent: {parameter}.\n" +
+                                        $"                  Saved user provided numerical translation of {_parameterToBeASked} to settings file.");
                     break;
                 }
                 catch (FormatException)
                 {
                     Clear();
-                    WriteLine(" Please insert valid number.");
-                    //log
+                    WriteLine(" Please insert valid number:");
                     logWriter.WriteLine($" {DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
-                                         "                  User provided excise in incorrect format" +
+                                        $"                  User provided {_parameterToBeASked} in incorrect format" +
                                          "                  or there was no input at all.");
                 }
                 catch (ArgumentException)
                 {
                     Clear();
                     WriteLine(" You must provide number that is positive signed number e.g.\n not zero and not with minus sign.");
-                    //log
                     logWriter.WriteLine($" {DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
-                                         "                  User provided zero or negative excise percent or price.");
+                                        $"                  User provided zero or negative {_parameterToBeASked} percent or price.");
                 }
             }
             logWriter.Flush();
-            UserInputedPriceTypeCheck(logWriter, "excise", ref excisePriceType);
+            UserInputedPriceTypeCheck(logWriter, _parameterToBeASked, ref excisePriceType);
             Clear();
         }
         private void UserInputedPriceTypeCheck(StreamWriter logWriter, string userInput, ref bool inputType)

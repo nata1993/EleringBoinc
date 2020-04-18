@@ -5,7 +5,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
     <PublishSingleFile>true</PublishSingleFile>
-    <Version>1.6.0</Version>
+    <Version>1.6.1</Version>
     <Authors>Bogdan Parubok</Authors>
     <Company />
     <Product>Boinc Electricity Price Follower</Product>
@@ -19,11 +19,16 @@
       ? - improvement
       * - update
       ======
+      v1.6.1
+      ______
+      ? - Simplified BoincElectricity global variables and further cleaned up code.
+      ? - Rewritten code for asking user input to consist of less "code smell" aka less copy paste code.
+      ======
       v1.6.0
       ______
       ? - Implemented method for checking if BOINC is installed on computer in original Program Files
-          folder. User can provide alternative filepath to BOINC program if BOINC is not found in
-          Program Files folder.
+      folder. User can provide alternative filepath to BOINC program if BOINC is not found in
+      Program Files folder.
       ======
       v1.5.2
       ______
@@ -46,7 +51,7 @@
       v1.4.2
       ______
       ? - Code clean-up: 1) Removed one unnecessary parameter and its conversion.
-                         2) Removed double loging when BOINC was not running.
+      2) Removed double loging when BOINC was not running.
       ? - User can not provide zero or negative signed electricity price as baseline.
       ? - Changed when happens flushing of logs to log file.
       ======
@@ -64,8 +69,8 @@
       ! - Fixed bug where release notes file was not created.
       ? - Rewritten code for easier maintainability and reading.
       * - Main program is now object as well as main method parameters are hidden.
-        - Removed extra method for checking if user inputed decimal number with comma or dot and made such checking easier
-          in more suitable place as one liner code.
+      - Removed extra method for checking if user inputed decimal number with comma or dot and made such checking easier
+      in more suitable place as one liner code.
       ======
       v1.3.1
       ______
