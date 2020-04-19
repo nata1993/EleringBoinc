@@ -5,7 +5,7 @@
   },
   "projects": {
     "C:\\Users\\Kebo\\Desktop\\Kool\\programmeerimine\\BoincElectricity\\BoincElectricity.csproj": {
-      "version": "1.6.1",
+      "version": "1.6.2",
       "restore": {
         "projectUniqueName": "C:\\Users\\Kebo\\Desktop\\Kool\\programmeerimine\\BoincElectricity\\BoincElectricity.csproj",
         "projectName": "BoincElectricity",
@@ -46,6 +46,10 @@
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[12.0.3, )"
+            },
+            "System.Management": {
+              "target": "Package",
+              "version": "[4.7.0, )"
             }
           },
           "imports": [

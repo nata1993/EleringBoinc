@@ -14,21 +14,22 @@ namespace BoincElectricity
     class Setup
     {
         //file names and paths
-        private protected string mainPath = @"C:\BoincElectricity\";
+        private protected string boincElectricityPath = @"C:\BoincElectricity\";
         private protected string logFilePath = @"C:\BoincElectricity\Boinc-Electricity-Log.txt";
         private protected string releaseNotesFilePath = @"C:\BoincElectricity\Boinc-Electricity-Release-Notes.txt";
-        private protected string readMeFIlePath = @"C:\BoincElectricity\Boinc-Electricity-Read-Me.txt";
+        private protected string readMeFilePath = @"C:\BoincElectricity\Boinc-Electricity-Read-Me.txt";
         private protected string settingsFilePath = @"C:\BoincElectricity\Boinc-Electricity-User-Settings.txt";
-        private protected string boincProgram = @"\boincmgr";
+        private protected string boincProgramApplicationName = @"\boincmgr";
         private protected string boincInstallationPath = @"C:\Program Files\BOINC program";
-        private protected string[] externalSettings;
+        private protected string[] settingsFromSettingsFile;
 
         public string LogFile { get { return logFilePath; } }
-        public string BoincProgram { get { return boincProgram; } }
+        public string BoincProgram { get { return boincProgramApplicationName; } }
         public string SettingsFile { get { return settingsFilePath; } }
         public string BoincInstallationPath { get { return boincInstallationPath; } }
-        public string[] ExternalSettings { get { return externalSettings; } }
+        public string[] SettingsFromSettingsFile { get { return settingsFromSettingsFile; } }
 
+        //public methods
         public void SetupConsoleWindow()
         {
             //setup console window
@@ -41,15 +42,14 @@ namespace BoincElectricity
             BufferWidth = 66;
             CursorVisible = false;
         }
-        public void ShowSettingsFile()
+        public void CreateDirectoriesAndFiles()
         {
-            WriteLine(" Previous settings:\n");
-            externalSettings = File.ReadAllLines(settingsFilePath);
-            for (int i = 0; i < externalSettings.Length; i++)
+            if (!Directory.Exists(boincElectricityPath))
             {
-                string condition = Enum.GetName(typeof(Taxes), i);
-                WriteLine($" {Uppercase(condition)}: {externalSettings[i]}");
+                Directory.CreateDirectory(boincElectricityPath);
             }
+            CreateReleaseNotes(releaseNotesFilePath);
+            CreateReadMe(readMeFilePath);
         }
         public void CheckIfBoincIsInstalled()
         {
@@ -77,6 +77,19 @@ namespace BoincElectricity
                 Clear();
             }
         }
+        public void ReadSettingsFile()
+        {
+            Clear();
+            WriteLine(" Previous settings:\n");
+            settingsFromSettingsFile = File.ReadAllLines(settingsFilePath);
+            for (int i = 0; i < settingsFromSettingsFile.Length; i++)
+            {
+                string condition = Enum.GetName(typeof(Taxes), i);
+                WriteLine($" {Uppercase(condition)}: {settingsFromSettingsFile[i]}");
+            }
+        }
+
+        //private methods
         private string Uppercase(string s)
         {
             if (string.IsNullOrEmpty(s))
@@ -87,16 +100,7 @@ namespace BoincElectricity
             c[0] = char.ToUpper(c[0]);
             return new string(c);
         }
-        public void CreateDirectoriesAndFiles()
-        {
-            if (!Directory.Exists(mainPath))
-            {
-                Directory.CreateDirectory(mainPath);
-            }
-            CreateReleaseNotes(releaseNotesFilePath);
-            CreateProgramIntro(readMeFIlePath);
-        }
-        private void CreateProgramIntro(string path)
+        private void CreateReadMe(string path)
         {
             string intro =
                 " Creator: Bogdan Parubok\n" +
@@ -113,7 +117,7 @@ namespace BoincElectricity
                 " Running BOINC software utilizes computer ressources, namely CPU and GPU computing power to solve complex\n" +
                 " mathematical calculations for science. In essence combining any BOINC program user computed data, we get world\n" +
                 " wide grid of computers which all work for one goal - advancing science through virtual problem solving.\n" +
-                " This means that grid of computers basically comes together as one supercomputer.\n However, giving unspent\n" +
+                " This means that grid of computers basically comes together as one supercomputer. However, giving unspent\n" +
                 " computer ressources for science spends electricity and electricity has a price tag. Hence this BoincElectricity\n" +
                 " program was created.\n" +
                 " This program asks during first start-up some data from user which will be used for basic program work. That data\n" +
@@ -141,16 +145,31 @@ namespace BoincElectricity
                 " BoincElectricity wont be regulating when BOINC must work and must stop working which in turn will let BOINC to run at\n" +
                 " some point at unfavorable electricity price for user.\n" +
                 " BoincElectricity is simple and lightweight program written in C# for Windows operating system. At some point in future\n" +
-                " BoincElectricity will also support Linux operating system too\n." +
+                " BoincElectricity will also support Linux operating system too.\n" +
                 " This program main auditory is for those users who dont have big money on hand to spend right and left but still want to\n" +
                 " contribute somehow to science. BOINC is one of such ways and BoincElectricity was created for this purpose to attempt to\n" +
-                " solve such problem.";
+                " solve such problem.\n\n" +
+                " ======\n" +
+                " Notes\n" +
+                " ______\n" +
+                " 1) Price on electricity stockmarket is usually in MegaWattHour pricing. User usually consumes in KiloWattHour pricing.\n" +
+                "    BoincElectricity is showing and calculating pricing in MegaWattHours. If you want to know how much you pay for each\n" +
+                "    KiloWattHour, then simply divide MegaWattHour by 1000 e.g 20 €/Mwh / 1000 = 0.02 €/kWh or 2 cents per kwh.\n" +
+                " 2) BoincElectricity must be started before BOINC is started, otherwise program crashes because it is unable to parse\n" +
+                "    BOINC processes under itself to control BOINC shutting down and restarting process in a loop.\n";
             File.WriteAllText(path, intro);
         }
         private void CreateReleaseNotes(string path)
         {
             string releaseNotes =
                 " ! - bug\n ? - improvement\n * - update\n" +
+                " ======\n v1.6.2\n ______\n" +
+                " ! - Fixed bug where data asked from user was saved in wrong order to settings file and then\n" +
+                "     because of that shown in wrong order to user.\n" +
+                " ! - Fixed bug where final price for user was calculated incorrectly because of using wrong\n" +
+                "     price types in price type checking method.\n" +
+                " ? - Corrected little more of \"code smell\".\n" +
+                " * - UpdatedRread Me file.\n" +
                 " ======\n v1.6.1\n ______\n" +
                 " ? - Simplified BoincElectricity global variables and further cleaned up code.\n" +
                 " ? - Rewritten code for asking user input to consist of less \"code smell\" aka less copy paste code.\n" +

@@ -7,8 +7,10 @@ namespace BoincElectricity
 {
     enum Taxes
     {
-        PEVIOUSLY_USER_PROVIDED_ELECTRICITY_PRICE,
+        ELECTRICITY_PRICE,
         VAT,
-        EXCISE
+        VAT_TYPE,
+        EXCISE,
+        EXCISE_TYPE
     }
 }
