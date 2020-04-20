@@ -63,7 +63,7 @@ namespace BoincElectricity
                 {
                     CursorLeft = 1;
                     boincInstallationPath = ReadLine();
-                    if (!Directory.Exists(boincInstallationPath))
+                    if (!Directory.Exists(boincInstallationPath))   //User provided new path is overwritten to boincInstallationPath and then checked if there is such directory
                     {
                         Clear();
                         WriteLine(" Provided directory does not exist!\n" +
@@ -80,7 +80,7 @@ namespace BoincElectricity
         public void ReadSettingsFile()
         {
             Clear();
-            WriteLine(" Previous settings:\n");
+            WriteLine(" Settings:\n");
             settingsFromSettingsFile = File.ReadAllLines(settingsFilePath);
             for (int i = 0; i < settingsFromSettingsFile.Length; i++)
             {
@@ -163,6 +163,9 @@ namespace BoincElectricity
         {
             string releaseNotes =
                 " ! - bug\n ? - improvement\n * - update\n" +
+                " ======\n v1.6.3\n ______\n" +
+                " ? - Another correction of \"code smell\".\n" +
+                " ? - Small code cleanup and refactoring.\n" +
                 " ======\n v1.6.2\n ______\n" +
                 " ! - Fixed bug where data asked from user was saved in wrong order to settings file and then\n" +
                 "     because of that shown in wrong order to user.\n" +

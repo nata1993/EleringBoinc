@@ -9,8 +9,8 @@ namespace BoincElectricity
     {
         ELECTRICITY_PRICE,
         VAT,
-        VAT_TYPE,
+        VAT_PERCENT,
         EXCISE,
-        EXCISE_TYPE
+        EXCISE_PERCENT
     }
 }

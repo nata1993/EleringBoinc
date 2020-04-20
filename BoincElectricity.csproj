@@ -5,7 +5,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
     <PublishSingleFile>true</PublishSingleFile>
-    <Version>1.6.2</Version>
+    <Version>1.6.3</Version>
     <Authors>Bogdan Parubok</Authors>
     <Company />
     <Product>Boinc Electricity Price Follower</Product>
@@ -18,6 +18,11 @@
       ! - bug
       ? - improvement
       * - update
+      ======
+      v1.6.3
+      ______
+      ? - Another correction of "code smell".
+      ? - Small code cleanup and refactoring.
       ======
       v1.6.2
       ______

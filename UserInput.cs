@@ -16,7 +16,7 @@ namespace BoincElectricity
         private protected string priceTypeInput;                                            //parameter for checking if provided prices are either fixed prices or percent
         private protected double userProvidedElectricityPrice;                              //user provided maximum electricity price he/she wants to run boinc at
         private protected double userProvidedVAT;                                           //user provided VAT in percent or fixed price
-        private protected static bool VATPriceType;                                              //If false, then its fixed type price, if true, it is percent type price
+        private protected static bool VATPriceType;                                         //If false, then its fixed type price, if true, it is percent type price
         private protected double userProvidedExcise;                                        //user provided excise in percent or fixed price
         private protected static bool excisePriceType;                                      //If false, then its fixed type price, if true, it is percent type price
         private protected List<string> collectedPricesFromUser;
@@ -39,10 +39,9 @@ namespace BoincElectricity
                         throw new ArgumentException("Zero or negative number user input!");
                     }
                     //log
-                    logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
-                                        $"                  User provided electricity price: {userProvidedElectricityPrice}.\n" +
-                                        $"                  User provided numerical translation of electricity price: {userProvidedElectricityPrice}.\n" +
-                                         "                  Saved user provided numerical translation of electricity price to settings file.");
+                    logWriter.WriteLine($" {DateTime.Now} - --------------------------\n" +
+                                        $"                       User provided electricity price: {userProvidedElectricityPrice}.\n" +
+                                         "                       Saved user provided numerical translation of electricity price to settings file.");
                     break;
                 }
                 catch (FormatException)
@@ -50,17 +49,17 @@ namespace BoincElectricity
                     Clear();
                     WriteLine(" Please insert valid number.");
                     //log
-                    logWriter.WriteLine($" {DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
-                                         "                  User provided baseline electricity price in incorrect format" +
-                                         "                  or there was no input at all.");
+                    logWriter.WriteLine($" {DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
+                                         "                       User provided baseline electricity price in incorrect format\n" +
+                                         "                       or there was no input at all.");
                 }
                 catch (ArgumentException)
                 {
                     Clear();
                     WriteLine(" You must provide number that is positive signed number e.g.\n not zero and not with minus sign.");
                     //log
-                    logWriter.WriteLine($" {DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
-                                         "                  User provided zero or negative electricity price.");
+                    logWriter.WriteLine($" {DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
+                                         "                       User provided zero or negative electricity price.");
                 }
             }
             logWriter.Flush();
@@ -90,17 +89,6 @@ namespace BoincElectricity
             };
             File.WriteAllLines(setup.SettingsFile, collectedPricesFromUser);
         }
-        public void ShowUserProvidedData()
-        {
-            Clear();
-            byte i = 0;
-            foreach(string dataPiece in collectedPricesFromUser)
-            {
-                WriteLine($" {dataPiece} - {(Taxes)i}");
-                i++;
-            }
-            CursorLeft = 1;
-        }
 
         //private methods
         private void AskingBlank(StreamWriter logWriter, ref double price, string _parameterToBeASked)
@@ -116,25 +104,25 @@ namespace BoincElectricity
                         throw new ArgumentException("Zero or negative number user input!");
                     }
                     //log
-                    logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
+                    logWriter.WriteLine($" {DateTime.Now} - --------------------------\n" +
                                         $" {DateTime.Now} - User provided {_parameterToBeASked} price or percent: {price}.\n" +
-                                        $"                  Saved user provided numerical translation of {_parameterToBeASked} to settings file.");
+                                        $"                       Saved user provided numerical translation of {_parameterToBeASked} to settings file.");
                     break;
                 }
                 catch (FormatException)
                 {
                     Clear();
                     WriteLine(" Please insert valid number:");
-                    logWriter.WriteLine($" {DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
-                                        $"                  User provided {_parameterToBeASked} in incorrect format" +
-                                         "                  or there was no input at all.");
+                    logWriter.WriteLine($" {DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
+                                        $"                       User provided {_parameterToBeASked} in incorrect format\n" +
+                                         "                       or there was no input at all.");
                 }
                 catch (ArgumentException)
                 {
                     Clear();
                     WriteLine(" You must provide number that is positive signed number e.g.\n not zero and not with minus sign.");
-                    logWriter.WriteLine($" {DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
-                                        $"                  User provided zero or negative {_parameterToBeASked} percent or price.");
+                    logWriter.WriteLine($" {DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
+                                        $"                       User provided zero or negative {_parameterToBeASked} percent or price.");
                 }
             }
             logWriter.Flush();
@@ -151,14 +139,14 @@ namespace BoincElectricity
                     if (priceTypeInput.ToLower() == "p")
                     {
                         inputType = true;
-                        logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
-                                            $"                  User provided {_parameterToBeAsked} price is in percent.");
+                        logWriter.WriteLine($" {DateTime.Now} - --------------------------\n" +
+                                            $"                       User provided {_parameterToBeAsked} price is in percent.");
                         break;
                     }
                     else if (priceTypeInput.ToLower() == "f")
                     {
-                        logWriter.WriteLine($" {DateTime.Now} - -----------------------------\n" +
-                                            $"                  User provided {_parameterToBeAsked} price is fixed price.");
+                        logWriter.WriteLine($" {DateTime.Now} - --------------------------\n" +
+                                            $"                       User provided {_parameterToBeAsked} price is fixed price.");
                         break;
                     }
                     else
