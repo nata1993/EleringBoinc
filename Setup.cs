@@ -3,11 +3,6 @@ using System.IO;
 using System.Text;
 using static System.Console;
 
-//calculate spent electricity and its cost
-//calculate total electricity used over time.
-//check if BOINC is even installed on computer
-//optional: send data to database
-
 namespace BoincElectricity
 {
     //Class for setting up essential prerequisites for program to loop, save and read data
@@ -19,27 +14,27 @@ namespace BoincElectricity
         private protected string releaseNotesFilePath = @"C:\BoincElectricity\Boinc-Electricity-Release-Notes.txt";
         private protected string readMeFilePath = @"C:\BoincElectricity\Boinc-Electricity-Read-Me.txt";
         private protected string settingsFilePath = @"C:\BoincElectricity\Boinc-Electricity-User-Settings.txt";
-        private protected string boincProgramApplicationName = @"\boincmgr";
-        private protected string boincInstallationPath = @"C:\Program Files\BOINC program";
+        private static protected string boincProgramApplicationName = @"\boincmgr";
+        private static protected string boincInstallationPath = @"C:\Program Files\BOINC program";
         private protected string[] settingsFromSettingsFile;
 
         public string LogFile { get { return logFilePath; } }
-        public string BoincProgram { get { return boincProgramApplicationName; } }
+        public static string BoincProgram { get { return boincProgramApplicationName; } }
         public string SettingsFile { get { return settingsFilePath; } }
-        public string BoincInstallationPath { get { return boincInstallationPath; } }
+        public static string BoincInstallationPath { get { return boincInstallationPath; } }
         public string[] SettingsFromSettingsFile { get { return settingsFromSettingsFile; } }
 
         //public methods
         public void SetupConsoleWindow()
         {
             //setup console window
-            OutputEncoding = Encoding.UTF8;
-            InputEncoding = Encoding.UTF8;
-            Title = "BoincElectricity";
             BackgroundColor = ConsoleColor.DarkGray;
             ForegroundColor = ConsoleColor.Black;
             SetWindowSize(66, 15);
             BufferWidth = 66;
+            OutputEncoding = Encoding.UTF8;
+            InputEncoding = Encoding.UTF8;
+            Title = "BoincElectricity";
             CursorVisible = false;
         }
         public void CreateDirectoriesAndFiles()
@@ -82,10 +77,10 @@ namespace BoincElectricity
             Clear();
             WriteLine(" Settings:\n");
             settingsFromSettingsFile = File.ReadAllLines(settingsFilePath);
-            for (int i = 0; i < settingsFromSettingsFile.Length; i++)
+            for (int i = 1; i < settingsFromSettingsFile.Length; i++)
             {
-                string condition = Enum.GetName(typeof(Taxes), i);
-                WriteLine($" {Uppercase(condition)}: {settingsFromSettingsFile[i]}");
+                string condition = Enum.GetName(typeof(PriceSettings), i);
+                WriteLine($" {Uppercase(condition).Replace("_", " ")}: {settingsFromSettingsFile[i]}");
             }
         }
 
@@ -164,6 +159,7 @@ namespace BoincElectricity
             string releaseNotes =
                 " ! - bug\n ? - improvement\n * - update\n" +
                 " ======\n v1.6.3\n ______\n" +
+                " ! - Fixed bug where enumerated settings were read from file in wrong order.\n" +
                 " ? - Another correction of \"code smell\".\n" +
                 " ? - Small code cleanup and refactoring.\n" +
                 " ======\n v1.6.2\n ______\n" +

@@ -5,9 +5,6 @@ using System.Net;
 using System.Threading.Tasks;
 using static System.Console;
 
-//add pc recognition of components and calculate total system power
-//optional: send data to database
-
 namespace BoincElectricity
 {
     class BoincElectricity
@@ -33,7 +30,7 @@ namespace BoincElectricity
             setup.CreateDirectoriesAndFiles();
             setup.CheckIfBoincIsInstalled();
             boinc.StartInfo.UseShellExecute = false;                                        //start only executables e.g.: .exe
-            boinc.StartInfo.FileName = setup.BoincInstallationPath + setup.BoincProgram;    //file path for the program to be started
+            boinc.StartInfo.FileName = Setup.BoincInstallationPath + Setup.BoincProgram;    //file path for the program to be started
             //log
             logWriter.WriteLine($" {DateTime.Now} - ========================== NEW PROGRAM STARTUP =========================================\n" +
                                  "                       Setting up program ressources: Directory, StreamWriter, API object, Process object, etc.\n" +
@@ -63,7 +60,7 @@ namespace BoincElectricity
                     setup.ReadSettingsFile();                                               //read settings file and show its content on the sreen
                     Task.Delay(4000).Wait();
                     //read settings file for saved data - if tryparse fails e.g false e.g exception created e.g settings file is corrupted, ask user to provide baseline price
-                    savedPrice = double.TryParse(setup.SettingsFromSettingsFile[0], out double convertedResult);
+                    savedPrice = double.TryParse(setup.SettingsFromSettingsFile[1], out double convertedResult);
                     WriteLine(" Using previously saved electricity price limit.");
                     //log
                     logWriter.WriteLine($" {DateTime.Now} - --------------------------\n" +
@@ -108,10 +105,10 @@ namespace BoincElectricity
                         elering.GetApiData();                                               //getting data from elering
                         elering.CalculateRemainingSecondsTillNextHour();
                         CalculateClientElectricityPrice(elering.PriceFromElering, 
-                                                        setup.SettingsFromSettingsFile[1], 
                                                         setup.SettingsFromSettingsFile[2], 
                                                         setup.SettingsFromSettingsFile[3], 
-                                                        setup.SettingsFromSettingsFile[4]);
+                                                        setup.SettingsFromSettingsFile[4], 
+                                                        setup.SettingsFromSettingsFile[5]);
                         break;
                     }
                     catch (WebException)
@@ -127,7 +124,7 @@ namespace BoincElectricity
                 }
 
                 //CHECK FOR RUNNING PROCESSES
-                PrintCurrentPrice(elering.DatetimeFromElering, elering.PriceFromElering);       //print acquired data from Elering
+                PrintCurrentPrice(elering.DatetimeFromElering, elering.PriceFromElering);   //print acquired data from Elering
                 WriteLine(" Checking for running boinc processes.\n");
                 //log
                 logWriter.WriteLine($" {DateTime.Now} - --------------------------\n" +

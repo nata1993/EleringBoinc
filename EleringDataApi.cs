@@ -1,15 +1,9 @@
 ﻿using System.Collections.Generic;
 
-//save user provided highest electricity price and use it for next program startup
-//calculate spent electricity and its cost
-//calculate total electricity used over time.
-//check if BOINC is even installed on computer
-//optional: send data to database
-//optinal: create release notes from within program
-
 namespace BoincElectricity
 {
-    //EleringDataAPI class represents Elering API hierarchy
+    //EleringDataAPI class represents Elering API hierarchy for baltic countries
+    //Elering takes its data most likely from NordPoolStop
     class EleringDataApi
     {
         public class Ee
@@ -17,9 +11,21 @@ namespace BoincElectricity
             public int Timestamp { get; set; }
             public double Price { get; set; }
         }
+        public class Lv
+        {
+            public int Timestamp { get; set; }
+            public double Price { get; set; }
+        }
+        public class Lt
+        {
+            public int Timestamp { get; set; }
+            public double Price { get; set; }
+        }
         public class Data
         {
             public List<Ee> Ee { get; set; }
+            public List<Lv> Lv { get; set; }
+            public List<Lt> Lt { get; set; }
         }
         public class EleringData
         {

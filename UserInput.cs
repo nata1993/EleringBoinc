@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 using static System.Console;
-
-//calculate spent electricity and its cost
-//calculate total electricity used over time.
-//check if BOINC is even installed on computer
-//optional: send data to database
 
 namespace BoincElectricity
 {
+    //Class for asking from used some info on the first program start-up 
+    //or when settings file is deleted/corrupted
     class UserInput
     {
         private protected string priceTypeInput;                                            //parameter for checking if provided prices are either fixed prices or percent
@@ -81,11 +77,12 @@ namespace BoincElectricity
             Setup setup = new Setup();
             collectedPricesFromUser = new List<string>
             {
+                Setup.BoincInstallationPath,
                 userProvidedElectricityPrice.ToString(),
                 userProvidedVAT.ToString(),
                 VATPriceType.ToString(),
                 userProvidedExcise.ToString(),
-                excisePriceType.ToString()
+                excisePriceType.ToString(),
             };
             File.WriteAllLines(setup.SettingsFile, collectedPricesFromUser);
         }
