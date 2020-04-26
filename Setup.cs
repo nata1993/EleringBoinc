@@ -162,6 +162,7 @@ namespace BoincElectricity
                 " ! - Fixed bug where enumerated settings were read from file in wrong order.\n" +
                 " ? - Another correction of \"code smell\".\n" +
                 " ? - Small code cleanup and refactoring.\n" +
+                " * - Removed unused NuGet package.\n" +
                 " ======\n v1.6.2\n ______\n" +
                 " ! - Fixed bug where data asked from user was saved in wrong order to settings file and then\n" +
                 "     because of that shown in wrong order to user.\n" +

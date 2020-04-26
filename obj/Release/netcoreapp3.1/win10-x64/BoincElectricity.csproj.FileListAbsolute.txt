@@ -235,5 +235,3 @@ C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Release\netcore
 C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Release\netcoreapp3.1\win10-x64\mscorrc.dll
 C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Release\netcoreapp3.1\win10-x64\ucrtbase.dll
 C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Release\netcoreapp3.1\win10-x64\mscordaccore_amd64_amd64_4.700.20.11803.dll
-C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Release\netcoreapp3.1\win10-x64\System.CodeDom.dll
-C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Release\netcoreapp3.1\win10-x64\System.Management.dll

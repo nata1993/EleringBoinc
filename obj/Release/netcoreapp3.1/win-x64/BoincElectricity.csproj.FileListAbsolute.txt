@@ -14,5 +14,3 @@ C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\obj\Release\netcore
 C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\obj\Release\netcoreapp3.1\win-x64\BoincElectricity.dll
 C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\obj\Release\netcoreapp3.1\win-x64\BoincElectricity.pdb
 C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\obj\Release\netcoreapp3.1\win-x64\BoincElectricity.genruntimeconfig.cache
-C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Release\netcoreapp3.1\win-x64\System.CodeDom.dll
-C:\Users\Kebo\Desktop\Kool\programmeerimine\BoincElectricity\bin\Release\netcoreapp3.1\win-x64\System.Management.dll

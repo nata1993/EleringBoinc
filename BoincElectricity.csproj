@@ -24,6 +24,7 @@
       ! - Fixed bug where enumerated settings were read from file in wrong order.
       ? - Another correction of "code smell".
       ? - Small code cleanup and refactoring.
+      * - Removed unused NuGet package.
       ======
       v1.6.2
       ______
@@ -150,7 +151,6 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="System.Management" Version="4.7.0" />
   </ItemGroup>
 
   <ItemGroup>
