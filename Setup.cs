@@ -36,6 +36,7 @@ namespace BoincElectricity
             InputEncoding = Encoding.UTF8;
             Title = "BoincElectricity";
             CursorVisible = false;
+            Clear();
         }
         public void CreateDirectoriesAndFiles()
         {
@@ -82,6 +83,7 @@ namespace BoincElectricity
                 string condition = Enum.GetName(typeof(PriceSettings), i);
                 WriteLine($" {Uppercase(condition).Replace("_", " ")}: {settingsFromSettingsFile[i]}");
             }
+            WriteLine();
         }
 
         //private methods
@@ -158,6 +160,13 @@ namespace BoincElectricity
         {
             string releaseNotes =
                 " ! - bug\n ? - improvement\n * - update\n" +
+                " ======\n v1.6.4\n ______\n" +
+                " ! - Fixed bug where program did not create appropriate folder for settings file.\n" +
+                " ! - Fixed bug where on program start-up, when no BOINC path was found, the program window.\n" +
+                "     colors were incorrect.\n" +
+                " ? - Corrected some text dublicates." +
+                " * - BoincElectricity program is now self-contained meaning it does not need external\n" +
+                "     ressources for functioning.\n" +
                 " ======\n v1.6.3\n ______\n" +
                 " ! - Fixed bug where enumerated settings were read from file in wrong order.\n" +
                 " ? - Another correction of \"code smell\".\n" +

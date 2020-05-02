@@ -2,6 +2,8 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Threading.Tasks;
+using static System.Console;
 
 namespace BoincElectricity
 {
@@ -9,30 +11,42 @@ namespace BoincElectricity
     class Elering
     {
         private protected readonly string eleringApiLink = "https://dashboard.elering.ee/api/nps/price";
+        private protected readonly string eleringApiLink2 = "https://dashboard.elering.ee/api/balance/total";
         private protected string datetimeFromElering;                                           //time from elering converted to human readable date and time
         private protected double priceFromElering;                                              //price from elering without taxes
         private protected int timestampFromElering;                                             //timestamp from elering
         private protected int secondsTillOClock;
 
-        string EleringApiLink { get { return eleringApiLink; } }
         public string DatetimeFromElering { get { return datetimeFromElering; }  }
         public double PriceFromElering { get { return priceFromElering; }  }
         public int SecondsTillOClock { get { return secondsTillOClock; } }
 
         //public methods
-        public void GetApiData()
+        public void GetNPSPriceData()
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(EleringApiLink);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(eleringApiLink);
                            request.Method = "GET";
             var webResponse = request.GetResponse();
             var webResponseStream = webResponse.GetResponseStream();
             using var responseReader = new StreamReader(webResponseStream);
             var response = responseReader.ReadToEnd();
-            EleringDataApi.EleringData elering = JsonConvert.DeserializeObject<EleringDataApi.EleringData>(response);
+            EleringApi.NPSPrice.Price elering = JsonConvert.DeserializeObject<EleringApi.NPSPrice.Price>(response);
             //add data to object
             timestampFromElering = elering.Data.Ee[^1].Timestamp;
             datetimeFromElering = FormatDateandTimeFromEleringTimestamp(timestampFromElering);
             priceFromElering = elering.Data.Ee[^1].Price;
+        }
+        public void GETBalanceTotalData()   //NOT YET WORKING
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(eleringApiLink2);
+            request.Method = "GET";
+            var webResponse = request.GetResponse();
+            var webResponseStream = webResponse.GetResponseStream();
+            using var responseReader = new StreamReader(webResponseStream);
+            var response = responseReader.ReadToEnd();
+            EleringApi.Balance.Total balance = JsonConvert.DeserializeObject<EleringApi.Balance.Total>(response);
+            WriteLine(" " + balance.Data[0].Timestamp);
+            Task.Delay(20000).Wait();
         }
         public void CalculateRemainingSecondsTillNextHour()
         {

@@ -102,7 +102,7 @@ namespace BoincElectricity
                         logWriter.WriteLine($" {DateTime.Now} - --------------------------\n" +
                                              "                       Requesting data from Elering.");
                         logWriter.Flush();                                                  //flush logs from Elering data request
-                        elering.GetApiData();                                               //getting data from elering
+                        elering.GetNPSPriceData();                                          //getting data from elering
                         elering.CalculateRemainingSecondsTillNextHour();
                         CalculateClientElectricityPrice(elering.PriceFromElering, 
                                                         setup.SettingsFromSettingsFile[2], 
@@ -249,8 +249,7 @@ namespace BoincElectricity
         static void PrintCurrentPrice(string time, double price)
         {
             Clear();
-            WriteLine(" Requested data from Elering!\n" +
-                      " Electricity price right now\n" +
+            WriteLine(" Electricity price right now\n" +
                       " =========================\n " +
                      $"{time} : {price} €/MWh\n" +
                      $" Final price for user: {Math.Round(clientPrice, 2)} €/MWh\n");

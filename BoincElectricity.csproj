@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
     <PublishSingleFile>true</PublishSingleFile>
     <Version>1.6.3</Version>
@@ -18,6 +18,14 @@
       ! - bug
       ? - improvement
       * - update
+      ======
+      v1.6.4
+      ______
+      ! - Fixed bug where program did not create appropriate folder for settings file.
+      ! - Fixed bug where on program start-up, when no BOINC path was found, the program window.
+      ? - Corrected some text dublicates.
+      * - BoincElectricity program is now self-contained meaning it does not need external
+          ressources for functioning.
       ======
       v1.6.3
       ______
