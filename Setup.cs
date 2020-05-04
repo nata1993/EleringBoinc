@@ -40,10 +40,7 @@ namespace BoincElectricity
         }
         public void CreateDirectoriesAndFiles()
         {
-            if (!Directory.Exists(boincElectricityPath))
-            {
-                Directory.CreateDirectory(boincElectricityPath);
-            }
+            Directory.CreateDirectory(boincElectricityPath);
             CreateReleaseNotes(releaseNotesFilePath);
             CreateReadMe(readMeFilePath);
         }

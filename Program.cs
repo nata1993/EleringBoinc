@@ -20,17 +20,15 @@ namespace BoincElectricity
         {
             //objects and writers
             Setup setup = new Setup();                                                      //Setup is used for creating directories and other BoincElectricity program settings
+                  setup.SetupConsoleWindow();
+                  setup.CreateDirectoriesAndFiles();
+                  setup.CheckIfBoincIsInstalled();
             StreamWriter logWriter = new StreamWriter(setup.LogFile, true);                 //StreamWritter is adding data to log file, not overwriting
             Elering elering = new Elering();                                                //Elering is used for data aqcuisition from Elering API
             UserInput userInput = new UserInput();                                          //UserInput is used for asking user to provide necessary data on start up
             Process boinc = new Process();                                                  //create process of external program to be run
-
-            //SETUP
-            setup.SetupConsoleWindow();
-            setup.CreateDirectoriesAndFiles();
-            setup.CheckIfBoincIsInstalled();
-            boinc.StartInfo.UseShellExecute = false;                                        //start only executables e.g.: .exe
-            boinc.StartInfo.FileName = Setup.BoincInstallationPath + Setup.BoincProgram;    //file path for the program to be started
+                    boinc.StartInfo.UseShellExecute = false;                                //start only executables e.g.: .exe
+                    boinc.StartInfo.FileName = Setup.BoincInstallationPath + Setup.BoincProgram;    //file path for the program to be started
             //log
             logWriter.WriteLine($" {DateTime.Now} - ========================== NEW PROGRAM STARTUP =========================================\n" +
                                  "                       Setting up program ressources: Directory, StreamWriter, API object, Process object, etc.\n" +
