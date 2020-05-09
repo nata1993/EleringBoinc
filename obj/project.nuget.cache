@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "uUK44wqJyVvxkeI048yMB1Eh8tkyyS6V4hN4nmftQg8/7ru2syG/GJXHO1onutJocUijouOM3f0naaOKuMjQ1g==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Kebo\\Desktop\\Kool\\programmeerimine\\BoincElectricity\\BoincElectricity.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Kebo\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512",
+    "C:\\Users\\Kebo\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\3.0.3\\microsoft.windowsdesktop.app.runtime.win-x64.3.0.3.nupkg.sha512",
+    "C:\\Users\\Kebo\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\3.0.3\\microsoft.netcore.app.runtime.win-x64.3.0.3.nupkg.sha512",
+    "C:\\Users\\Kebo\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\3.0.3\\microsoft.aspnetcore.app.runtime.win-x64.3.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

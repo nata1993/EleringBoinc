@@ -80,6 +80,7 @@ namespace BoincElectricity
             {
                 //REQUEST FOR ELECTRICITY DATA FROM ELERING
                 retryCounter = 1;
+                clientPrice = 0;
                 while (true)
                 {
                     try
@@ -92,6 +93,7 @@ namespace BoincElectricity
                                              "                       Requesting data from Elering.");
                         logWriter.Flush();                                                  
                         elering.GetNPSPriceData();                                          //Getting data from elering
+                        elering.CalculateRemainingSecondsTillNextHour();
                         CalculateClientElectricityPrice(elering.PriceFromElering, 
                                                         setup.SettingsFromSettingsFile[2], 
                                                         setup.SettingsFromSettingsFile[3], 
@@ -116,8 +118,8 @@ namespace BoincElectricity
                 WriteLine(" Checking for running boinc processes.\n");
                 //log
                 logWriter.WriteLine($" {DateTime.Now} - --------------------------\n" +
-                                    $"                       Calculated seconds till next o'clock: {elering.RemainingSecondsTillOClock / 1000}.\n" +    //Calculate milliseconds into seconds
                                     $"                       Requested data from Elering: {elering.DatetimeFromElering} : {elering.PriceFromElering}.\n" +
+                                    $"                       Calculated seconds till next o'clock: {elering.RemainingSecondsTillOClock / 1000}.\n" +    //Calculate milliseconds into seconds" +
                                      "                       Checking for running processes.");
                 logWriter.Flush();
                 Task.Delay(2000).Wait();                                                    //Wait for two seconds for user to read
@@ -125,7 +127,7 @@ namespace BoincElectricity
                 try
                 {
                     Process[] processList = Process.GetProcessesByName("BOINC");            //Search for running processes by name
-                    allRunningProcesses = processList[0].ToString();                        //convert acquired process into string for later use
+                    allRunningProcesses = processList[0].ToString();                        //Convert acquired process into string for later use
                 }
                 catch (IndexOutOfRangeException)
                 {

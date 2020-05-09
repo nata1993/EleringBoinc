@@ -5,7 +5,7 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
     <PublishSingleFile>true</PublishSingleFile>
-    <Version>1.6.3</Version>
+    <Version>1.6.4</Version>
     <Authors>Bogdan Parubok</Authors>
     <Company />
     <Product>Boinc Electricity Price Follower</Product>
@@ -21,6 +21,8 @@
       ======
       v1.6.4
       ______
+      ! - Fixed bug where client price per kWh was not recalculated for each data acquisition from
+          electricity stockmarket API call.
       ! - Fixed bug where program did not create appropriate folder for settings file.
       ! - Fixed bug where on program start-up, when no BOINC path was found, the program window colors
           were incorrect.

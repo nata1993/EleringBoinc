@@ -161,6 +161,8 @@ namespace BoincElectricity
             string releaseNotes =
                 " ! - bug\n ? - improvement\n * - update\n" +
                 " ======\n v1.6.4\n ______\n" +
+                " ! - Fixed bug where client price per kWh was not recalculated for each data acquisition from\n" +
+                "     electricity stockmarket API call.\n" +
                 " ! - Fixed bug where program did not create appropriate folder for settings file.\n" +
                 " ! - Fixed bug where on program start-up, when no BOINC path was found, the program window colors\n" +
                 "     were incorrect.\n" +
