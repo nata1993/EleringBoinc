@@ -22,69 +22,12 @@ namespace BoincElectricity
         public static bool VATtype { get { return excisePriceType; } }
 
         //public methods
-        public void AskElectricityPrice(StreamWriter logWriter)
+        public void AskUserInput(StreamWriter logWriter)
         {
-            while (true)
-            {
-                try
-                {
-                    Write(" Please provide baseline electricity price you want to run\n program in megawatts per hour pricing (e.g 45 as in 45€/MWh): ");
-                    userProvidedElectricityPrice = double.Parse(ReadLine().Replace(".", ","));
-                    if (userProvidedElectricityPrice <= 0)
-                    {
-                        throw new ArgumentException("Zero or negative number user input!");
-                    }
-                    //log
-                    logWriter.WriteLine($" {DateTime.Now} - --------------------------\n" +
-                                        $"                       User provided electricity price: {userProvidedElectricityPrice}.\n" +
-                                         "                       Saved user provided numerical translation of electricity price to settings file.");
-                    break;
-                }
-                catch (FormatException)
-                {
-                    Clear();
-                    WriteLine(" Please insert valid number.");
-                    //log
-                    logWriter.WriteLine($" {DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
-                                         "                       User provided baseline electricity price in incorrect format\n" +
-                                         "                       or there was no input at all.");
-                }
-                catch (ArgumentException)
-                {
-                    Clear();
-                    WriteLine(" You must provide number that is positive signed number e.g.\n not zero and not with minus sign.");
-                    //log
-                    logWriter.WriteLine($" {DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
-                                         "                       User provided zero or negative electricity price.");
-                }
-            }
-            logWriter.Flush();
-            Clear();
-        }
-        public void AskVAT(StreamWriter logWriter, string parameterToBeAsked)
-        {
-            AskingBlank(logWriter, ref userProvidedVAT, parameterToBeAsked);
-            UserInputedPriceTypeCheck(logWriter, parameterToBeAsked, ref VATPriceType);
-        }
-        public void AskExcise(StreamWriter logWriter, string parameterToBeAsked)
-        {
-            AskingBlank(logWriter, ref userProvidedExcise, parameterToBeAsked);
-            UserInputedPriceTypeCheck(logWriter, parameterToBeAsked, ref excisePriceType);
+            AskElectricityPrice(logWriter);
+            AskVAT(logWriter, "VAT");
+            AskExcise(logWriter, "Excise");
             SaveInputToSettingsFile();
-        }
-        public void SaveInputToSettingsFile()
-        {
-            Setup setup = new Setup();
-            collectedPricesFromUser = new List<string>
-            {
-                Setup.BoincInstallationPath,
-                userProvidedElectricityPrice.ToString(),
-                userProvidedVAT.ToString(),
-                VATPriceType.ToString(),
-                userProvidedExcise.ToString(),
-                excisePriceType.ToString(),
-            };
-            File.WriteAllLines(setup.SettingsFile, collectedPricesFromUser);
         }
 
         //private methods
@@ -124,6 +67,56 @@ namespace BoincElectricity
             }
             logWriter.Flush();
         }
+        private void AskElectricityPrice(StreamWriter logWriter)
+        {
+            while (true)
+            {
+                try
+                {
+                    Write(" Please provide baseline electricity price you want to run\n program in megawatts per hour pricing (e.g 45 as in 45€/MWh): ");
+                    userProvidedElectricityPrice = double.Parse(ReadLine().Replace(".", ","));
+                    if (userProvidedElectricityPrice <= 0)
+                    {
+                        throw new ArgumentException("Zero or negative number user input!");
+                    }
+                    //log
+                    logWriter.WriteLine($" {DateTime.Now} - --------------------------\n" +
+                                        $"                       User provided electricity price: {userProvidedElectricityPrice}.\n" +
+                                         "                       Saved user provided numerical translation of electricity price to settings file.");
+                    break;
+                }
+                catch (FormatException)
+                {
+                    Clear();
+                    WriteLine(" Please insert valid number.");
+                    //log
+                    logWriter.WriteLine($" {DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
+                                         "                       User provided baseline electricity price in incorrect format\n" +
+                                         "                       or there was no input at all.");
+                }
+                catch (ArgumentException)
+                {
+                    Clear();
+                    WriteLine(" You must provide number that is positive signed number e.g.\n not zero and not with minus sign.");
+                    //log
+                    logWriter.WriteLine($" {DateTime.Now} - !!!!!!!!!!!!!!!!!!!!!!!!!!\n" +
+                                         "                       User provided zero or negative electricity price.");
+                }
+            }
+            logWriter.Flush();
+            Clear();
+        }
+        private void AskVAT(StreamWriter logWriter, string parameterToBeAsked)
+        {
+            AskingBlank(logWriter, ref userProvidedVAT, parameterToBeAsked);
+            UserInputedPriceTypeCheck(logWriter, parameterToBeAsked, ref VATPriceType);
+        }
+        private void AskExcise(StreamWriter logWriter, string parameterToBeAsked)
+        {
+            AskingBlank(logWriter, ref userProvidedExcise, parameterToBeAsked);
+            UserInputedPriceTypeCheck(logWriter, parameterToBeAsked, ref excisePriceType);
+            SaveInputToSettingsFile();
+        }
         private void UserInputedPriceTypeCheck(StreamWriter logWriter, string _parameterToBeAsked, ref bool inputType)
         {
             while (true)
@@ -158,6 +151,19 @@ namespace BoincElectricity
             }
             logWriter.Flush();
             Clear();
+        }
+        private void SaveInputToSettingsFile()
+        {
+            collectedPricesFromUser = new List<string>
+            {
+                Setup.BoincInstallationPath,
+                userProvidedElectricityPrice.ToString(),
+                userProvidedVAT.ToString(),
+                VATPriceType.ToString(),
+                userProvidedExcise.ToString(),
+                excisePriceType.ToString(),
+            };
+            File.WriteAllLines(Setup.SettingsFile, collectedPricesFromUser);
         }
     }
 }

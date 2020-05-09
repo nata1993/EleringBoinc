@@ -22,10 +22,13 @@
       v1.6.4
       ______
       ! - Fixed bug where program did not create appropriate folder for settings file.
-      ! - Fixed bug where on program start-up, when no BOINC path was found, the program window.
+      ! - Fixed bug where on program start-up, when no BOINC path was found, the program window colors
+          were incorrect.
+      ! - Fixed bug where settings names from enum class were shown always in uppercase.
       ? - Corrected some text dublicates.
-      * - BoincElectricity program is now self-contained meaning it does not need external
-          ressources for functioning.
+      * - BoincElectricity program is now self-contained meaning it does not need external ressources for
+          functioning.
+      * - Additional code refactorins.
       ======
       v1.6.3
       ______

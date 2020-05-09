@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using static System.Console;
 
 namespace BoincElectricity
@@ -10,17 +11,17 @@ namespace BoincElectricity
     {
         //file names and paths
         private protected string boincElectricityPath = @"C:\BoincElectricity\";
-        private protected string logFilePath = @"C:\BoincElectricity\Boinc-Electricity-Log.txt";
+        private static protected string logFilePath = @"C:\BoincElectricity\Boinc-Electricity-Log.txt";
         private protected string releaseNotesFilePath = @"C:\BoincElectricity\Boinc-Electricity-Release-Notes.txt";
         private protected string readMeFilePath = @"C:\BoincElectricity\Boinc-Electricity-Read-Me.txt";
-        private protected string settingsFilePath = @"C:\BoincElectricity\Boinc-Electricity-User-Settings.txt";
-        private static protected string boincProgramApplicationName = @"\boincmgr";
+        private static protected string settingsFilePath = @"C:\BoincElectricity\Boinc-Electricity-User-Settings.txt";
+        private protected string boincProgramApplicationName = @"\boincmgr";
         private static protected string boincInstallationPath = @"C:\Program Files\BOINC program";
         private protected string[] settingsFromSettingsFile;
 
-        public string LogFile { get { return logFilePath; } }
-        public static string BoincProgram { get { return boincProgramApplicationName; } }
-        public string SettingsFile { get { return settingsFilePath; } }
+        public static string LogFile { get { return logFilePath; } }
+        public string BoincProgram { get { return boincProgramApplicationName; } }
+        public static string SettingsFile { get { return settingsFilePath; } }
         public static string BoincInstallationPath { get { return boincInstallationPath; } }
         public string[] SettingsFromSettingsFile { get { return settingsFromSettingsFile; } }
 
@@ -50,8 +51,9 @@ namespace BoincElectricity
             {
                 CursorVisible = true;
                 WriteLine(" Boinc program is not installed in Program Files directory.\n" +
-                          " Can not continue automation of process.\n\n" +
-                          " Please provide full destination path to BOINC program:");
+                          " Can not continue automation of process.\n" +
+                          " Example: C:\\Program Files\\BOINC program\n\n" +
+                          " Please provide full destination path to BOINC program:\n");
                 while (true)
                 {
                     CursorLeft = 1;
@@ -77,10 +79,11 @@ namespace BoincElectricity
             settingsFromSettingsFile = File.ReadAllLines(settingsFilePath);
             for (int i = 1; i < settingsFromSettingsFile.Length; i++)
             {
-                string condition = Enum.GetName(typeof(PriceSettings), i);
+                string condition = Enum.GetName(typeof(PriceSettings), i).ToLower();
                 WriteLine($" {Uppercase(condition).Replace("_", " ")}: {settingsFromSettingsFile[i]}");
             }
             WriteLine();
+            Task.Delay(4000).Wait();
         }
 
         //private methods
@@ -159,11 +162,13 @@ namespace BoincElectricity
                 " ! - bug\n ? - improvement\n * - update\n" +
                 " ======\n v1.6.4\n ______\n" +
                 " ! - Fixed bug where program did not create appropriate folder for settings file.\n" +
-                " ! - Fixed bug where on program start-up, when no BOINC path was found, the program window.\n" +
-                "     colors were incorrect.\n" +
-                " ? - Corrected some text dublicates." +
-                " * - BoincElectricity program is now self-contained meaning it does not need external\n" +
-                "     ressources for functioning.\n" +
+                " ! - Fixed bug where on program start-up, when no BOINC path was found, the program window colors\n" +
+                "     were incorrect.\n" +
+                " ! - Fixed bug where settings names from enum class were shown always in uppercase.\n" +
+                " ? - Corrected some text dublicates.\n" +
+                " * - BoincElectricity program is now self-contained meaning it does not need external ressources for\n" +
+                "     functioning.\n" +
+                " * - Additional code refactorins.\n" +
                 " ======\n v1.6.3\n ______\n" +
                 " ! - Fixed bug where enumerated settings were read from file in wrong order.\n" +
                 " ? - Another correction of \"code smell\".\n" +
