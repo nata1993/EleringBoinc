@@ -6,7 +6,7 @@ using System.Net;
 namespace BoincElectricity
 {
     //Elering class is used for acquiring data from Elering and data reacquisition timing
-    class Elering
+    class EleringAPIRequest
     {
         private protected readonly string eleringApiLink = "https://dashboard.elering.ee/api/nps/price";
         private protected string datetimeFromElering;                                           //time from elering converted to human readable date and time
@@ -27,10 +27,10 @@ namespace BoincElectricity
             var webResponseStream = webResponse.GetResponseStream();
             using var responseReader = new StreamReader(webResponseStream);
             var response = responseReader.ReadToEnd();
-            EleringApi.NPSPrice.Price elering = JsonConvert.DeserializeObject<EleringApi.NPSPrice.Price>(response);
+            EleringApiData.NPSPrice.Price elering = JsonConvert.DeserializeObject<EleringApiData.NPSPrice.Price>(response);
             //add data to object
             timestampFromElering = elering.Data.Ee[^1].Timestamp;
-            datetimeFromElering = FormatDateandTimeFromEleringTimestamp(timestampFromElering);
+            datetimeFromElering = FormatDateAndTimeFromEleringTimestamp(timestampFromElering);
             priceFromElering = elering.Data.Ee[^1].Price;
         }
         public void CalculateRemainingSecondsTillNextHour()
@@ -42,7 +42,7 @@ namespace BoincElectricity
         }
 
         //private methods
-        private string FormatDateandTimeFromEleringTimestamp(int timeStamp)
+        private string FormatDateAndTimeFromEleringTimestamp(int timeStamp)
         {
             DateTime date = new DateTime(1970, 1, 1, 0, 0, 0).AddSeconds(timeStamp).ToLocalTime();
             string formatedDate = date.ToString("dd.MM.yyyy HH:mm");

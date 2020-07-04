@@ -4,7 +4,7 @@ namespace BoincElectricity
 {
     //EleringDataAPI class represents Elering API hierarchy for baltic countries and Finland
     //Elering takes its data most likely from NordPoolSpot
-    class EleringApi
+    class EleringApiData
     {
         //NordPoolSpot day price
         public class NPSPrice
@@ -43,7 +43,7 @@ namespace BoincElectricity
             }
         }
         //Local area grid balance - renewables, crude, bio etc
-        public class Balance
+        /*public class Balance
         {
             public class Total
             {
@@ -66,6 +66,6 @@ namespace BoincElectricity
                 public double Export_total { get; set; }
                 public double Consumption_local_total { get; set; }
             }
-        }
+        }*/
     }
 }

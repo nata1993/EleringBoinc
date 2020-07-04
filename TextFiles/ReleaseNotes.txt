@@ -1,0 +1,142 @@
+﻿! - bug
+? - improvement
+* - update
+======
+v1.6.5
+______
+* - Minor update of variable names.
+======
+v1.6.4
+______
+! - Fixed bug where client price per kWh was not recalculated for each data acquisition from
+    electricity stockmarket API call.
+! - Fixed bug where program did not create appropriate folder for settings file.
+! - Fixed bug where on program start-up, when no BOINC path was found, the program window colors
+    were incorrect.
+! - Fixed bug where settings names from enum class were shown always in uppercase.
+? - Corrected some text dublicates.
+* - BoincElectricity program is now self-contained meaning it does not need external ressources for
+    functioning.
+* - Additional code refactorins.
+======
+v1.6.3
+______
+! - Fixed bug where enumerated settings were read from file in wrong order.
+? - Another correction of "code smell".
+? - Small code cleanup and refactoring.
+* - Removed unused NuGet package.
+======
+v1.6.2
+______
+! - Fixed bug where data asked from user was saved in wrong order to settings file and then
+    because of that shown in wrong order to user.
+! - Fixed bug where final price for user was calculated incorrectly because of using wrong
+    price types in price type checking method.
+? - Corrected little more of "code smell".
+* - UpdatedRread Me file.
+======
+v1.6.1
+______
+? - Simplified BoincElectricity global variables and further cleaned up code.
+? - Rewritten code for asking user input to consist of less "code smell" aka less copy paste code.
+======
+v1.6.0
+______
+? - Implemented method for checking if BOINC is installed on computer in original Program Files
+    folder.User can provide alternative filepath to BOINC program if BOINC is not found in
+    Program Files folder.
+======
+v1.5.2
+______
+! - Fixed bug where Task.Delay was not working properly.
+* - Added icon.
+======
+v1.5.1
+______
+! - Fixed bug where release notes and read me file would not be updated after new program release.
+? - Small code cleanup and UI polishing. Content of release notes method is now structured according to
+    changes classificators.
+* - Added Read Me file and text with description about BoincElectricity program.
+* - Moved away from blocking timers to non-blocking timers e.g Thread.Sleep is now Task.Delay.
+======
+v1.5.0
+______
+? - Additional code refactorings.
+* - Added user input for local VAT and Excise which are saved to settings file.
+* - User input is moved to class.
+* - Created setup class with setup settings for cleaner code.
+======
+v1.4.2
+______
+? - Code clean-up: 1) Removed one unnecessary parameter and its conversion.
+                   2) Removed double loging when BOINC was not running.
+? - User can not provide zero or negative signed electricity price as baseline.
+? - Changed when happens flushing of logs to log file.
+======
+v1.4.1
+______
+? - Console window size is now fixed to 65 width units and 15 height units.
+* - Program compiled with "ReadyToRun" function which according to Microsoft, improves program startup.
+======
+v1.4.0
+______
+? - Complitely rewritten code for more structured code and easier reading.
+======
+v1.3.2
+______
+! - Fixed bug where release notes file was not created.
+? - Removed extra method for checking if user inputed decimal number with comma or dot and made such checking
+    easier in more suitable place as one liner code.
+? - Rewritten code for easier maintainability and reading.
+* - Main program is now object as well as main method parameters are hidden.
+======
+v1.3.1
+______
+? - Updated code for easier maintainability.
+======
+v1.3.0
+______
+? - Rewritten code little bit for easier maintainability and testing aswell as bug tracking.
+* - Created method for checking if user previously provided electricity price level.If not, ask
+    user to provide such data and save it to file for later use by program.
+======
+v1.2.2
+______
+? - Minor improvements.
+======
+v1.2.1
+______
+! - Fixed bug where program crashed when o'clock happened and program asked from Elering electricity
+    price but was unable to acquire data. Implemented 10 seconds buffer time for such occurence.
+======
+v1.2.0
+______
+! - Fixed Elering data setters bug where Elering data could be modified in the main program method.
+? - Rewritten code for easier reading of program text and log text.
+* - Added method for calculating remaining seconds till next o'clock with additional 5 seconds for
+    confirmed data acquisition from Elering.
+======
+v1.1.1
+______
+? - Moved method of user input for electricity price level for asking only once when program starts.
+======
+v1.1.0
+______
+* - Added mechanism for writing working and error log of program.
+======
+v1.0.3
+______
+* - Added method that distinguishes between user inputed value whenever it is written with comma or dot.
+    Method also replaces input with dot to input with comma.
+======
+v1.0.2
+______
+* - Added method for user to provide electricity price level from which program will turn BOINC on or off.
+======
+v1.0.1
+______
+? - Minor language mistakes corrected.
+======
+v1.0.0
+______
+* - Initial release or Console Application.

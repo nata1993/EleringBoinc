@@ -5,6 +5,42 @@ using System.Net;
 using System.Threading.Tasks;
 using static System.Console;
 
+//TODO
+//class EleringApi - nimi tekitab segadust, jääb mulje, justkui oleks tegemist API endaga. Parem oleks näiteks EleringApiData. Kuna EleringApi alamklassi Balance ei kasutata, siis poleks vaja seda lisada -   OK
+//class Elering - nimi võiks samuti olla rohkem vastavuses klassi sisuga (näiteks EleringApiRequest)    -    OK
+//class Setup: liiga palju teksti koodi sees. 
+//ReadMe ja ReleaseNotes võiksid olla eraldi tekstifailidena solution'i sees.   -    OK
+//Programmi käivitades saaks neid kopeerida kasutaja arvutisse.
+//Meetod SaveInputToSettingsFile() kutsutakse välja kaks korda järjest, seega üks nendest väljakutsetest on üleliigne. 
+/*Kuigi programmis ei ole väga palju faile, võiks neid siiski grupeerida kaustadesse, et programmi struktuur oleks selgem:
+    - ühes kaustas võiks olla kood, mis on seotud andmete pärimisega Eleringilt (2 faili)
+    - teises kaustas võiks olla kood, mis on seotud kasutaja hinnasätetega (samuti 2 faili)​
+*/
+/*class UserInput, meetodid 
+    - private void AskVAT(StreamWriter logWriter, string parameterToBeAsked) 
+    - private void AskExcise(StreamWriter logWriter, string parameterToBeAsked) 
+
+  Nende meetodite parameeter parameterToBeAsked on üleliigne. Eriti ilmne on see meetodite väljakutsumisel: AskVAT(logWriter, "VAT") ja AskExcise(logWriter, "Excise"); 
+  Kui on soov see parameeter alles jätta, siis peaks talle vähemalt andma vaikimisi väärtuse: private void AskVAT(StreamWriter logWriter, string parameterToBeAsked = "VAT"). 
+  Siis oleks meetodi väljakutse AskVAT(logWriter).
+*/
+/*Programmi käivitades luuakse fail Boinc-Electricity-Read-Me.txt, kus on põhjalikult lahti kirjutatud, milleks ja kuidas programmi kasutada. 
+ * Samas konsoolirakenduse kasutajale ei anta teada selle faili olemasolust ja asukohast. On arusaadav, et konsooli jaoks oleks kogu see tekst liiga pikk - 
+ * lahenduseks võiks olla näiteks see, et konsoolis näidatakse kasutajale vaid paarilauseline sissejuhatus ning antakse viide Read-Me failile.
+*/
+/*"VAT price" ja "excise price" mõisted tekitavad segadust. Näiteks "VAT price" jätab mulje, justkui peaks sisestama hinna KOOS käibemaksuga. 
+ * Kui jutt käib maksumäärast, siis õigem oleks kasutada sõna "rate", mitte "price".
+*/
+/*Kui programm lubab neid andmeid kahte moodi sisestada (protsentides ja absoluutväärtuses), siis võiks sellest kasutajale teada anda ENNE kui ta on vastuse sisestanud, mitte pärast. 
+ * Lisaks, ei ole kuulnud, et kuskil riigis oleks käibemaksumäär (erinevalt aktsiisist) fikseeritud absoluutarvuna, seda väljendatakse minu teada alati protsentides.
+*/
+/*See on väga hea mõte, et esimesel korral sisestatud hinnasätted salvestatakse faili, nii et järgmine kord ei pea kasutaja neid uuesti sisestama. 
+ * Samas, kui hinnasätted on salvestatud, puudub kasutajal võimalus neid muuta. Kui muutmisvõimaluse lisamine konsooli kaudu tundub liiga keerukas, siis võiks kasutajale teada anda nii palju, 
+ * et sätete muutmiseks on võimalik kustutada faili Boinc-Electricity-User-Settings.txt ning käivitada programmi uuesti (sel juhul palub programm andmeid uuesti sisestada).
+*/
+//Sarnaselt sellega, nagu salvestatakse hinnasätted, võiks salvestada ka BOINC programmi asukoha kasutaja arvutis, et kasutaja ei peaks seda iga kord uuesti sisestama.
+
+
 namespace BoincElectricity
 {
     class BoincElectricity
@@ -24,7 +60,7 @@ namespace BoincElectricity
                   setup.CreateDirectoriesAndFiles();
                   setup.CheckIfBoincIsInstalled();                                          //Checking if BOINC is installed in default installation folder like in WIN10
             StreamWriter logWriter = new StreamWriter(Setup.LogFile, true);                 //StreamWritter is adding data to log file, not overwriting
-            Elering elering = new Elering();                                                //Elering is used for data aqcuisition from Elering API
+            EleringAPIRequest elering = new EleringAPIRequest();                            //Is used for data aqcuisition from Elering API
             UserInput userInput = new UserInput();                                          //UserInput is used for asking user to provide necessary data on start up
             Process boinc = new Process();                                                  //Create process of external program to be run
                     boinc.StartInfo.UseShellExecute = false;                                //Start only executables e.g.: .exe

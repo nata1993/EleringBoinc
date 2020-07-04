@@ -160,6 +160,8 @@ namespace BoincElectricity
         {
             string releaseNotes =
                 " ! - bug\n ? - improvement\n * - update\n" +
+                "======\n v1.6.5\n ______\n" + 
+                " * - Minor update of variable names." +
                 " ======\n v1.6.4\n ______\n" +
                 " ! - Fixed bug where client price per kWh was not recalculated for each data acquisition from\n" +
                 "     electricity stockmarket API call.\n" +
