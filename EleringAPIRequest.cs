@@ -25,9 +25,10 @@ namespace BoincElectricity
                            request.Method = "GET";
             var webResponse = request.GetResponse();
             var webResponseStream = webResponse.GetResponseStream();
-            using var responseReader = new StreamReader(webResponseStream);
+            var responseReader = new StreamReader(webResponseStream);
             var response = responseReader.ReadToEnd();
             EleringApiData.NPSPrice.Price elering = JsonConvert.DeserializeObject<EleringApiData.NPSPrice.Price>(response);
+            int dataCount = elering.Data.Ee.Count;
             //add data to object
             timestampFromElering = elering.Data.Ee[^1].Timestamp;
             datetimeFromElering = FormatDateAndTimeFromEleringTimestamp(timestampFromElering);
